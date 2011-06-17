@@ -1,4 +1,6 @@
+
 define elexis::install($ensure, $source, $destdir, $version) {
+  include elexis::jre6
   $destzip = "$destdir/elexis-$version.zip"
   notify {"destzip ist $destzip":}
       exec { "elexis-$version-wget":
@@ -33,7 +35,7 @@ define elexis::install($ensure, $source, $destdir, $version) {
 	ensure => present,
 	require =>[Exec["elexis-$version-unzip"], 
 		   File["/usr/local/bin/elexis-$version"],
-#		   Package["sun-java6-jdk"]
+		   Package["sun-java6-jre"]
 		], 
 
  }
