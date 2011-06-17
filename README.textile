@@ -1,0 +1,4 @@
+h1. Puppet modules for elexis
+
+We want to install the OpenSource part of elexis in an easy way.
+
