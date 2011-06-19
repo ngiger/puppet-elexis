@@ -3,10 +3,27 @@
 # Thanks!
 
 class elexis::jre6 {
+file {"/etc/apt/sources.list.d/non_free.list":
+  ensure => present,
+  owner  => root,
+  group  => root,
+  mode   => 0644,
+  content => "deb http://mirror.switch.ch/ftp/mirror/debian/ squeeze main contrib non-free\n",
+}
+  exec {'java_apt_update':
+    command => "apt-get update",
+    path    => "/usr/bin:/usr/sbin:/bin:/sbin",
+#    refreshonly => true,
+    require => File["/etc/apt/sources.list.d/non_free.list"],
+  }
+
+
   package { "sun-java6-jre":
-    require      => File["/var/cache/debconf/jre6.seeds"],
+    require      => [ File["/var/cache/debconf/jre6.seeds", 
+			 "/etc/apt/sources.list.d/non_free.list"],
+                      Exec['java_apt_update'] ],
     responsefile => "/var/cache/debconf/jre6.seeds",
-    ensure       => latest;
+    ensure       => latest,
   }
 
   file { "/var/cache/debconf/jre6.seeds":
