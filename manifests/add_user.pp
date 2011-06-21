@@ -1,18 +1,18 @@
 define elexis::add_user( $email, $uid, $ensure = present ) {
 
-            $username = $title
+  $username = $title
   case $ensure {
     present: {
             user { $username:
                     comment => "$email",
                     home    => "/home/$username",
                     shell   => "/bin/bash",
-                    uid     => $uid
-            }
+                    uid     => $uid,
+           }
 
             group { $username:
                     gid     => $uid,
-                    require => user[$username]
+                    require => User[$username],
             }
 
             file { "/home/$username/":
@@ -22,7 +22,7 @@ define elexis::add_user( $email, $uid, $ensure = present ) {
                     mode    => 750,
 		    source  => "/etc/skel",
 		    recurse => true,
-                    require => [ user[$username], group[$username] ]
+                    require => [ User[$username], Group[$username] ],
             }
 
             file { "/home/$username/.ssh":
@@ -30,7 +30,7 @@ define elexis::add_user( $email, $uid, $ensure = present ) {
                     owner   => $username,
                     group   => $username,
                     mode    => 700,
-                    require => file["/home/$username/"]
+                    require => File["/home/$username/"],
             }
 
             file { "/home/$username/.bash_aliases":
@@ -38,7 +38,7 @@ define elexis::add_user( $email, $uid, $ensure = present ) {
                     owner   => $username,
                     group   => $username,
                     mode    => 644,
-                    require => file["/home/$username/"],
+                    require => File["/home/$username/"],
                     content  =>
 "alias ll='ls -al'
 alias ls='ls --color=auto'
@@ -51,7 +51,7 @@ alias ls='ls --color=auto'
  #                   owner   => $username,
  #                   group   => $username,
  #                   mode    => 600,
- #                   require => file["/home/$username/"]
+ #                   require => File["/home/$username/"]
  #           }
       }
     absent: {
