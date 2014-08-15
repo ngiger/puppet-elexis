@@ -1,0 +1,71 @@
+[global]
+workgroup = PRAXISUNION
+server string = %h
+local master = Yes
+preferred master = Yes
+domain master = Yes
+domain logons = Yes
+logon path = \\%L\profile\%U
+logon home = \\%L\%U
+logon drive = H:
+logon script = login.bat
+wins support = Yes
+unix password sync = Yes
+passwd program = /usr/bin/passwd %u
+passwd chat = *Enter\snew\sUNIX\spassword:* %n\n *Retype\snew\sUNIX\spassword:* %n\n .
+time server = Yes
+panic action = /usr/share/samba/panic-action %d
+hide files = /desktop.ini/ntuser.ini/NTUSER.*/Thumbs.db/
+oplocks = No
+Default: oplocks = yes 
+level2 oplocks = No
+# Generelles Beispiel
+# - Read-only per Default
+# - Schreibbar fuer Benutzer in der Gruppe praxis
+# - Permissions werden forciert
+# - Zugriff erfolgt immer als Benutzer praxis
+# - Permissions: Dateien:       schreibbar durch Unix-Benutzer und Unix-Gruppe
+#                Verzeichnisse: schreibbar durch Unix-Benutzer und Unix-Gruppe
+#                               Dateien werden mit Gruppe des Verzeichnisses angelegt
+#                               (SETGID Bit gesetzt)
+[praxis]
+    path = /home/samba/daten/praxis
+    comment = Praxis
+    read only = Yes
+    valid users = @praxis
+    write list = @praxis
+    create mask = 0660
+    force create mode = 0660
+    directory mask = 2770
+    force directory mode = 2770
+    force user = praxis
+    force group = praxis
+
+[profile]
+    comment = Benutzerprofile
+    path = /home/samba/profile
+    read only = No
+    create mask = 0600
+    force create mode = 0600
+    directory mask = 0700
+    force directory mode = 0700
+    browsable = No
+    profile acls = Yes
+
+[homes]
+    comment = Home Directories
+    read only = No
+    valid users = %S
+    create mask = 0600
+    force create mode = 0600
+    directory mask = 0700
+    force directory mode = 0700
+    browsable = No
+    hide dot files = Yes
+
+[netlogon]
+    comment = Anmeldedienst fuer die Domaene
+    path = /home/samba/logon
+    browsable = No
+    guest ok = Yes
+

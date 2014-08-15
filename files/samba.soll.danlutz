@@ -1,0 +1,204 @@
+# Samba-Konfiguration für Praxis-Server
+# Windows Domain Controller
+#
+# Hilfreiche Dokumentation:
+#
+# Referenz zur Konfiguration:
+#     man smb.conf
+# Samba-HOWTO-Collection:
+#     http://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/
+#
+# Buch "Using Samba, 2nd Edition":
+#     http://www.samba.org/samba/docs/using_samba/toc.html
+# Ubuntu-Dokumentation: smb.conf:
+#     http://wiki.ubuntuusers.de/Samba_Server/smb.conf
+# Ubuntu-Dokumentation: Samba Server als PDC:
+#     http://wiki.ubuntuusers.de/Samba_Server_PDC
+#
+# "DEM Addon 2007-02-20": Wertvolle Hinweise von http://wiki.ubuntuusers.de/Samba_Server_PDC
+#
+# Konfigurationsänderungen aktivieren: sudo /etc/init.d/samba reload
+
+# Wesentliche Eigenschaften dieser Konfiguration:
+# - Primary Domain Controller
+# - Profile sind unter /home/samba/profile/<Login> abgelegt
+# - Passwort-Sync Samba -> Unix aktiviert
+
+# Globale Parameter
+# =================
+
+[global]
+
+workgroup = PRAXISUNION
+Default: workgroup = WORKGROUP
+server string = %h
+Default: server string = Samba %v
+
+# Domain Controller
+# =================
+
+local master = Yes
+Default: local master = yes
+preferred master = Yes
+Default: preferred master = auto
+domain master = Yes
+Default: domain master = auto
+domain logons = Yes
+
+# Profil Einstellungen
+# ====================
+
+# Windows-Profil unter [profile] abspeichern
+logon path = \\%L\profile\%U
+Default: logon path = \\%N\%U\profile 
+logon home = \\%L\%U
+Default: logon home = \\%N\%U 
+logon drive = H:
+Default: logon drive =
+# Logon Script (wird beim Domain-Login auf dem Client ausgefuehrt)
+logon script = login.bat
+Default: logon script =
+
+# WINS
+# ====
+
+# WINS aktivieren (kann evtl. nuetzlich sein)
+wins support = Yes
+Default: wins support = no
+
+# Sicherheitseinstellungen
+# ========================
+
+security = user
+Default: security = USER
+encrypt passwords = Yes
+Default: encrypt passwords = yes
+passdb backend = tdbsam
+Default: passdb backend = tdbsam
+
+# Unix Passwort setzen, fals Samba-Passwort neu gesetzt wird
+unix password sync = Yes
+Default: unix password sync = no
+passwd program = /usr/bin/passwd %u
+Default: passwd program = 
+passwd chat = *Enter\snew\sUNIX\spassword:* %n\n *Retype\snew\sUNIX\spassword:* %n\n .
+Default: passwd chat debug = no 
+
+
+# Logging
+# =======
+
+# Logging nach syslog ab LOG_WARNING
+log level = 0
+Default: log level = 0
+syslog = 1
+Default: syslog = 1
+
+# Diverses
+# ========
+
+# Character Set: UTF-8 forcieren
+unix charset = UTF-8
+Default: unix charset = UTF8
+
+# Samba-Server als Zeit-Server aktivieren
+time server = Yes
+Default: time server = no
+
+# Meldung per E-Mail, wenn Problem auftritt (Mail an root)
+panic action = /usr/share/samba/panic-action %d
+Default: panic action =
+
+# Socket Optionen
+# DEM Addon 2007-02.20: Manchmal kann die Geschwindigkeit erhöht werden, wenn statt der ersten Zeile die zweite Zeile verwendet wird:
+socket options = TCP_NODELAY
+Default: socket options = TCP_NODELAY
+#socket options = TCP_NODELAY SO_RCVBUF=8192 SO_SNDBUF=8192
+
+# Default Einstellungen fuer Shares
+# =================================
+
+hide dot files = Yes
+Default: hide dot files = yes 
+
+# DEM Addon 2007-02-20: Empfehlenswert für servergespeichertes Windows Profil
+hide files = /desktop.ini/ntuser.ini/NTUSER.*/Thumbs.db/
+Default: hide files = # no file are hidden
+
+# Oplocks generell deaktivieren, damit gleichzeitig von Linux aus zugegriffen werden kann
+# Vgl. http://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/locking.html#id2616903
+oplocks = No
+Default: oplocks = yes 
+level2 oplocks = No
+# Currently, if kernel oplocks are supported then level2 oplocks are not granted (even if this parameter is set to yes). Note also, the oplocks parameter must be set to yes on this share in order for this parameter to have any effect.
+Default: level2 oplocks = yes 
+
+# Shares
+# ======
+
+# Netlogon und Profile
+
+[netlogon]
+    comment = Anmeldedienst fuer die Domaene
+    path = /home/samba/logon
+    read only = Yes
+#   Default: read only = yes
+    browseable = No
+#   Default: browseable = yes
+    guest ok = Yes
+#   Default: guest ok = no
+
+[profile]
+    comment = Benutzerprofile
+    path = /home/samba/profile
+    read only = No
+    create mask = 0600
+#   Default: create mask = 0744     
+    force create mode = 0600
+#   Default: force create mode = 000
+    directory mask = 0700
+#   Default: directory mask = 0755
+    force directory mode = 0700
+#    Default: force directory mode = 000 
+    browseable = No
+    # DEM Addon 2007-02-20: Folgende Zeile ist wichtig für Servergespeichertes Profil
+    # um Probleme mit z.b. desktop.ini unter Windows zu beheben.
+    profile acls = Yes
+#   Default: profile acls = no
+
+# Normale Shares
+
+# Home-Verzeichnis des Users
+[homes]
+    comment = Home Directories
+    read only = No
+    valid users = %S
+    create mask = 0600
+    force create mode = 0600
+    directory mask = 0700
+    force directory mode = 0700
+    browseable = No
+    hide dot files = Yes
+
+# Generelles Beispiel
+# - Read-only per Default
+# - Schreibbar fuer Benutzer in der Gruppe praxis
+# - Permissions werden forciert
+# - Zugriff erfolgt immer als Benutzer praxis
+# - Permissions: Dateien:       schreibbar durch Unix-Benutzer und Unix-Gruppe
+#                Verzeichnisse: schreibbar durch Unix-Benutzer und Unix-Gruppe
+#                               Dateien werden mit Gruppe des Verzeichnisses angelegt
+#                               (SETGID Bit gesetzt)
+[praxis]
+    path = /home/samba/daten/praxis
+    comment = Praxis
+    read only = Yes
+    valid users = @praxis
+    write list = @praxis
+    create mask = 0660
+    force create mode = 0660
+    directory mask = 2770
+    force directory mode = 2770
+    force user = praxis
+    force group = praxis
+

@@ -1,4 +1,5 @@
 h1. Puppet modules for elexis
 
-We want to install the OpenSource part of elexis in an easy way.
+Part of elexis-vagrant to setup an elexis environment on a Debian Server and Debian/Ubuntu clients.
+
 
