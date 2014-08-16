@@ -1,0 +1,14 @@
+{
+  "name": "ngiger-elexis",
+  "version": "0.1.0",
+  "author": "Niklaus Giger <niklaus.giger@member.fsf.org>",
+  "summary": "Puppet module for elexis.",
+  "license": "GNU General Public License v3 or Later (GPLv3+)",
+  "source": "",
+  "project_page": "https://github.com/ngiger/elexis-vagrant",
+  "issues_url": null,
+  "description": "Puppet module for elexis. Install",
+  "dependencies": [
+    {"name":"puppetlabs/apt","version_requirement":">= 1.0.0"}
+  ]
+}
