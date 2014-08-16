@@ -67,7 +67,7 @@ inherits elexis {
       comment    => $users_elexis_main['comment'],
       shell      => $users_elexis_main['shell'],
       ensure     => $users_elexis_main['ensure'],
-#      require    => Group[$groups_elexis_main],
+      require    => Group[$groups_elexis_main],
     }
   } else {
     elexis::user{'elexis': 

@@ -48,33 +48,44 @@ define elexis::user(
   $splitted = split($homes, ',')
   if (! $gid ) { $gid = $uid }
   if ("/home/$username" in $splitted)  {
-    user{$username:
+    user{"$username":
+      name       => $username,
       managehome => true,
       ensure     => $ensure,
       groups     => $groups,
       shell      => $shell,
       uid        => $uid,
-#      require    => Group[$groups],
+      require    => Group[$username],
     }
   } else {
-    user{$username:
-      managehome => true,
+    
+    user{"$username$gid":
+      name       => $username,
       ensure     => $ensure,
       groups     => $groups,
       comment    => $comment, # Motzt bei nicht US-ASCII Kommentaren wir Müller, aber nur wenn er nichts zu tun hat
       shell      => $shell,
       uid        => $uid,
-#      require    => Group[$groups],
+      gid        => $gid,
+      require    => Group[$username],
       password_min_age => 0, # force user to change it soon
     }
     if ("$ensure" != 'absent' ) { setpass { "$username": hash => "$password",  } }
   }
-  group {$username: ensure => $ensure }
-  if (!defined(Group['backup'])) {   group {'backup': ensure => present,  }  }
+  file{"Create_Home for $username":
+    source => '/etc/skel',
+    recurse => remote,
+    path    => "/home/$username",
+    owner   => $uid,
+    group   => $gid,
+  }
+  ensure_resource('group', $username, {'ensure' => 'present', 'gid' => $gid })
+  ensure_resource('group', 'backup',  {'ensure' => 'present' })
 
-  if ("$ensure" != 'absent' and defined(Group[$username])) {
-    exec{"/usr/sbin/adduser backup $username":
-      require => [ Group[$username, 'backup']],
+  if ("$ensure" != 'absent') {
+    exec{"Adding backup for user $username":
+      command => "/usr/sbin/adduser backup $username",
+      require => [ Group['backup'], User[$username]],
       unless => "/bin/grep ${username}: /etc/group  | /bin/grep backup",
     }
   }

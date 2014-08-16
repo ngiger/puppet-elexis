@@ -10,7 +10,7 @@ inherits elexis::common {
   if hiera('editor::default', false) {
     $editor_default = hiera('editor::default', '/usr/bin/vim.nox')  
     $editor_package = hiera('editor::package', 'vim-nox')
-    package{ [ $editor_package ]: ensure => present, }
+    ensure_packages([ $editor_package ])
     
     exec {'set_default_editor':
       command => "update-alternatives --set editor ${editor_default}",
