@@ -89,7 +89,7 @@ define elexis::install (
   # X-DBUS-ServiceName=org.kde.kmail
   ",
       mode  => 0644,
-      require => [ File[$logicalLink], Class[kde],],
+      require => [ File[$logicalLink],],
     }
 
     file { "/usr/share/icons/hicolor/128x128/apps/${title}.png":

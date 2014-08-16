@@ -27,11 +27,9 @@ class elexis::postgresql_server(
   $pg_archive_wal_script= '/usr/local/bin/pg_archive_wal.sh'
   
   class { 'postgresql::globals':
+    manage_package_repo => true,
     locale  => 'C',
     version => '9.1',
-  }
-  class { 'postgresql::params':
-#    encoding => 'UTF8',
   }
   class { 'postgresql::server':
     listen_addresses => '*',
