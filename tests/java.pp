@@ -21,7 +21,7 @@
 # }
 
 class java {
-  package { "python-software-properties": }
+  package { 'python-software-properties': }
 
         $installer =  'oracle-java7-installer'
 
@@ -29,29 +29,29 @@ class java {
       'Debian':  {
       class { 'apt': always_apt_update    => true, }
   apt::source { 'webupd8team':
-  location          => 'http://ppa.launchpad.net/webupd8team/java/ubuntu',
-  release           => 'precise',
-  repos             => 'main',
+  location    => 'http://ppa.launchpad.net/webupd8team/java/ubuntu',
+  release     => 'precise',
+  repos       => 'main',
 #  required_packages => 'debian-keyring debian-archive-keyring',
-  key               => 'EEA14886',
+  key         => 'EEA14886',
 #  key_server        => 'keyserver.ubuntu.com',
-  pin               => '-10',
-  include_src       => true
+  pin         => '-10',
+  include_src => true
 }
   $dependencies = [ Apt::Source['webupd8team'], Exec['apt_update']]
   }
       'Ubuntu': {
   include apt
-  apt::ppa { "ppa:webupd8team/java": }
+  apt::ppa { 'ppa:webupd8team/java': }
   $dependencies = Apt::Ppa['ppa:webupd8team/java']
       } # apply the redhat class
-      default:  { fail("\nx2go not (yet?) supported under $operatingsystem!!")
+      default:  { fail("\nx2go not (yet?) supported under ${operatingsystem}!!")
   $dependencies = []
-          file {"$x2go_dpkg_list":
-            ensure => present,
+          file {$x2go_dpkg_list:
+            ensure  => present,
             owner   => root,
-            content => "deb http://packages.x2go.org/debian $dist main
-deb src http://packages.x2go.org/debian $dist main
+            content => "deb http://packages.x2go.org/debian ${dist} main
+deb src http://packages.x2go.org/debian ${dist} main
 ",
           }
         
@@ -67,7 +67,7 @@ deb src http://packages.x2go.org/debian $dist main
   }
 
   package {$installer:
-    ensure => "latest",
+    ensure  => 'latest',
     require => [ $dependencies, Exec['set-licence-selected'], Exec['set-licence-seen']],
   }
 }

@@ -6,13 +6,14 @@ class elexis::vagrant {
       ensure => directory,
   }
 
-  if !defined(Package['git']) { package{ 'git': ensure => present } }
-  
-  vcsrepo { "$vcsRoot/elexis-vagrant":
-      ensure => present,
+#  if !defined(Package['git']) { package{ 'git': ensure => present } }
+  include git
+
+  vcsrepo { "${vcsRoot}/elexis-vagrant":
+      ensure   => present,
       provider => git,
-      require => [Package['git'], File[$vcsRoot]],
-      owner => 'vagrant',
-      source => "git://github.com/ngiger/elexis-vagrant.git"
+      require  => [File[$vcsRoot]],
+      owner    => 'vagrant',
+      source   => 'git://github.com/ngiger/elexis-vagrant.git'
   }
 }

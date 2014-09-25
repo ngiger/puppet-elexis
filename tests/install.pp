@@ -6,17 +6,17 @@ package {['slim', 'awesome']: }
 
 if (false) {
   include elexis::install
-  elexis::install {"elexis-Medelexis":
-    programURL             => 'http://www.medelexis.ch/dl21.php?file=medelexis-linux',
-    version                => 'current',
-    installBase            => '/opt/elexis',
+  elexis::install {'elexis-Medelexis':
+    programURL  => 'http://www.medelexis.ch/dl21.php?file=medelexis-linux',
+    version     => 'current',
+    installBase => '/opt/elexis',
   }
 
 } else {
-  elexis::install  {"OpenSource":
-    programURL             => hiera('elexis::install::OpenSource::programURL', 'please provide a correct URL'),
-    version                => hiera('elexis::install::OpenSource::version',    'please provide a correct version'),
-    installBase            => hiera('elexis::install::OpenSource::installBase', '/usr/local/elexis'),
+  elexis::install  {'OpenSource':
+    programURL  => hiera('elexis::install::OpenSource::programURL', 'please provide a correct URL'),
+    version     => hiera('elexis::install::OpenSource::version',    'please provide a correct version'),
+    installBase => hiera('elexis::install::OpenSource::installBase', '/usr/local/elexis'),
   }
 }
 

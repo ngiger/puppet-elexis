@@ -10,23 +10,23 @@ class elexis::mail(
   $mail_package = 'ssmtp'
   file { '/etc/puppet/private':
     ensure => directory,
-    owner => 'root',
-    group => 'root',
-    mode => '0644',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
   }
   
   file { '/etc/ssmtp/revaliases':
-  content => "# Managed by puppet elexis/manifests/mail.pp
+  content   => "# Managed by puppet elexis/manifests/mail.pp
 root:${email_user}
 vagrant:${email_user}
 ",
-    owner => 'root',
-    group => 'root',
-    mode => '0644',    
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     require => Package[$mail_package],
 }
  
-  package{"$mail_package": }
+  package{$mail_package: }
   file { '/etc/ssmtp/ssmtp.conf':
     content => "# Managed by puppet elexis/manifests/mail.pp
 root=${email_user}
@@ -38,16 +38,16 @@ AuthUser=${email_user}
 AuthPass=${email_password}
 FromLineOverride=Yes
 ",
-    owner => 'root',
-    group => 'root',
-    mode => '0644',    
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     require => Package[$mail_package],
 }
   
 # setup some mail aliases
-  mailalias { "root":
+  mailalias { 'root':
     ensure    => present,
-    recipient => "$email_user",
+    recipient => $email_user,
     provider  => augeas,
   }
   

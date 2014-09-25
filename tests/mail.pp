@@ -1,2 +1,2 @@
-notify { "test: elexis::mail": }
+notify { 'test: elexis::mail': }
 include elexis::mail

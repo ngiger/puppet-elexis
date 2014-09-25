@@ -1,1 +1,1 @@
-if (false) { notify{"xx":}  } else {  notify{"aa":}  }
+if (false) { notify{'xx':}  } else {  notify{'aa':}  }

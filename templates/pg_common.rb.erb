@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+#
+# Copyright (c) 2014 Niklaus Giger niklaus.giger@member.fsf.org
+#
+$: << File.dirname( __FILE__)
+require 'pg_util.rb'
+
+pg_main_db_name      = '<%= @pg_main_db_name %>'
+pg_main_db_user      = '<%= @pg_main_db_user %>'
+pg_main_db_password  = '<%= @pg_main_db_password %>'
+pg_tst_db_name       = '<%= @pg_tst_db_name %>'
+pg_dump_dir          = '<%= @pg_dump_dir %>'
+pg_remote_backup     = '<%= @pg_remote_backup %>'
+
+ENV['PGPASSWORD'] = '<%= @pg_main_db_password %>'
+dump   = "#{pg_dump_dir}/#{pg_main_db_name}.dump.gz"

@@ -1,5 +1,5 @@
 class { 'elexis':
-  $jenkinsRoot = '/srv/jenkins'
+  jenkinsRoot => '/srv/jenkins'
 }
 
 include elexis::jenkins_slave

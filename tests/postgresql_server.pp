@@ -1,3 +1,5 @@
-notify { "test: elexis::postgresql_server system_role $system_role": }
-include concat::setup
-include elexis::postgresql_server
+notice('test: elexis::postgresql_server')
+class {"elexis::postgresql_server":
+  ensure => 'present'
+}
+

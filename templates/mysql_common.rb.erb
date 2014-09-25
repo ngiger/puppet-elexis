@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+#
+# Copyright (c) Niklaus Giger niklaus.giger@member.fsf.org
+#
+$: << File.dirname( __FILE__)
+require 'pg_util.rb'
+
+mysql_main_db_name      = '<%=  @mysql_main_db_name %>'
+mysql_main_db_user      = '<%=  @mysql_main_db_user %>'
+mysql_main_db_password  = '<%=  @mysql_main_db_password %>'
+mysql_tst_db_name       = '<%=  @mysql_tst_db_name %>'
+mysql_dump_dir          = '<%=  @mysql_dump_dir %>'
+dump                    = "#{mysql_dump_dir}/#{mysql_main_db_name}.dump.gz"

@@ -1,0 +1,16 @@
+# run once rake spec_prep
+# run often (avoiding download) rake spec_standalone
+fixtures:
+  forge_modules:
+      stdlib:
+          repo: "puppetlabs/stdlib"
+          ref: "4.3.2"
+      apt: "puppetlabs/apt"
+      concat: "puppetlabs/concat"
+      mysql: "puppetlabs/mysql"
+      postgresql: "puppetlabs/postgresql"
+      git:        "jproyo/git"
+  repositories:
+    rsnapshot: "git://github.com/ngiger/puppet-rsnapshot.git"
+  symlinks:
+    elexis: "#{source_dir}"

@@ -1,3 +1,3 @@
-notify { "test: elexis::praxis_wiki": }
+notify { 'test: elexis::praxis_wiki': }
 
 include elexis::praxis_wiki

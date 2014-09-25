@@ -2,7 +2,7 @@
 class { 'apache':
       default_mods        => false,
       default_confd_files => false,
-      mpm_module => apache::mod::worker,
+      mpm_module          => apache::mod::worker,
     }
 apache::vhost { 'ssl.example.com':
       port    => '443',

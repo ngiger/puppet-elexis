@@ -5,7 +5,7 @@ if (false)  { # haraldsk/nfs needs also in puppet.conf
   # leads to (Exec[concat_/etc/exports] => Concat[/etc/exports] => Service[nfs-kernel-server] => Class[Nfs::Server::Debian] => Concat[/etc/exports] => Exec[concat_/etc/exports])
 
     class { 'nfs::server':
-      nfs_v4 => true,
+      nfs_v4                     => true,
       nfs_v4_export_root_clients =>
         '172.25.1.0/24(rw,fsid=root,insecure,no_subtree_check,async,no_root_squash)'
     }
@@ -21,7 +21,7 @@ if (false)  { # haraldsk/nfs needs also in puppet.conf
 }
 nfs::export { '/etc':
     options => [ 'rw', 'async', 'no_subtree_check' ],
-    clients => [ "172.25.1.0/24" ],
+    clients => [ '172.25.1.0/24' ],
 }
 } else { # arusso/nfs'
 #  include nfs

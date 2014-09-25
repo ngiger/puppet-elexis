@@ -1,2 +1,4 @@
-notify { "test: elexis::mysql_server": }
-include elexis::mysql_server
+notify { 'test: elexis::mysql_server': }
+class {"elexis::mysql_server":
+	ensure => 'present'
+}
