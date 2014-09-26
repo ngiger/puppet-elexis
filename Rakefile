@@ -1,7 +1,7 @@
+require 'puppet-lint/tasks/puppet-lint'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'puppetlabs_spec_helper/puppetlabs_spec_helper'
-require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
 
 # PuppetLint.configuration.fail_on_warnings

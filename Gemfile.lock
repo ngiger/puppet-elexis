@@ -11,7 +11,7 @@ GEM
     metaclass (0.0.4)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
-    puppet (3.6.1)
+    puppet (3.6.2)
       facter (> 1.6, < 3)
       hiera (~> 1.0)
       json_pure
@@ -43,7 +43,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  puppet (= 3.6.1)
+  puppet (= 3.6.2)
   puppet-lint
   puppet-syntax
   puppetlabs_spec_helper
