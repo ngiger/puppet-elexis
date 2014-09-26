@@ -1,1 +1,1 @@
-include elexis
+class {"elexis":}

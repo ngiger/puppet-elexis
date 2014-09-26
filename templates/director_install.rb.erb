@@ -1,0 +1,8 @@
+#!/bin/bash -v
+/usr/local/bin/director/director \
+  -profile Elexis \
+  \
+  -d <%= @install_dir      %> \
+  -repository <%= @features_2_install.keys.join  (','   ) %> \
+  -installIUs <%= @features_2_install.values.join(' -i ') %> 
+#  exit 1 unless system("#{INSTALL_CMD} -repository #{REPOS.keys.join(' -r ')} -installIUs #{REPOS.values.join(' -i ')}")

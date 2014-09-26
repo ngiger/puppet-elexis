@@ -55,19 +55,20 @@ define elexis::user(
       groups     => $groups,
       shell      => $shell,
       uid        => $uid,
+      gid        => $gid,
       require    => Group[$username],
     }
+    ensure_resource('group', $username, {'ensure' => 'present', 'gid' => $gid })
   } else {
     user{"${username}${gid}":
-      name             => $username,
-      ensure           => $ensure,
-      groups           => $groups,
-      comment          => $comment, # Motzt bei nicht US-ASCII Kommentaren wir Müller, aber nur wenn er nichts zu tun hat
-      shell            => $shell,
-      uid              => $uid,
-      gid              => $gid,
-      require          => Group[$username],
-      password         => $password,
+      name    => $username,
+      ensure  => $ensure,
+      groups  => $groups,
+      comment => $comment, # Motzt bei nicht US-ASCII Kommentaren wir Müller, aber nur wenn er nichts zu tun hat
+      shell   => $shell,
+      uid     => $uid,
+      gid     => $gid,
+      # password         => $password,
       # password_min_age => 0, # force user to change it soon
     }
     if ($ensure != 'absent' ) { setpass { $username: hash => $password,  } }
@@ -79,7 +80,6 @@ define elexis::user(
     owner   => $uid,
     group   => $gid,
   }
-  ensure_resource('group', $username, {'ensure' => 'present', 'gid' => $gid })
   ensure_resource('group', 'backup',  {'ensure' => 'present' })
 
   if ($ensure != 'absent') {

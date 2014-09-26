@@ -13,7 +13,7 @@
 # === Examples:
 #
 #   class { 'elexis':
-#     java               => 'openjdk-6,
+#     java               => 'openjdk-7',
 #   }
 #
 #
@@ -25,12 +25,13 @@ class elexis (
   $db_password         = $::elexis::params::db_password,
   $db_pw_hash          = $::elexis::params::db_pw_hash,
   $java                = $::elexis::params::java,
-  $binDir              = $::elexis::params::binDir,
+  $bin_dir             = $::elexis::params::bin_dir,
   $service_path        = $::elexis::params::service_path,
-  $jenkinsRoot         = $::elexis::params::jenkinsRoot,
-  $downloadDir         = $::elexis::params::downloadDir,
-  $downloadURL         = $::elexis::params::downloadURL,
+  $jenkins_root        = $::elexis::params::jenkins_root,
+  $download_dir        = $::elexis::params::download_dir,
+  $download_url        = $::elexis::params::download_url,
   $db_type             = $::elexis::params::db_type,
+  $elexis_main         = $::elexis::params::elexis_main,
 ) inherits elexis::params {
-
+  notice("class elexis db ${db_type}")
 }

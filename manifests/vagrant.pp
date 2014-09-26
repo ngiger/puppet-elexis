@@ -1,19 +1,23 @@
 # kate: replace-tabs on; indent-width 2; indent-mode cstyle; syntax ruby
 
-class elexis::vagrant {
-  $vcsRoot = '/home/vagrant'
+class elexis::vagrant(
+  $ensure  = false,
+  $vcsRoot = '/home/vagrant',
+) inherits elexis::params {
+  
+  if ($ensure == false) {
+    notice("Skip elexis::vagrant als ensure ${ensure} == false")
+  } else {
     file { $vcsRoot:
       ensure => directory,
-  }
+    }
 
-#  if !defined(Package['git']) { package{ 'git': ensure => present } }
-  include git
-
-  vcsrepo { "${vcsRoot}/elexis-vagrant":
-      ensure   => present,
-      provider => git,
-      require  => [File[$vcsRoot]],
-      owner    => 'vagrant',
-      source   => 'git://github.com/ngiger/elexis-vagrant.git'
+    vcsrepo { "${vcsRoot}/elexis-vagrant":
+        ensure   => present,
+        provider => git,
+        require  => [File[$vcsRoot]],
+        owner    => 'vagrant',
+        source   => 'git://github.com/ngiger/elexis-vagrant.git'
+    }
   }
 }

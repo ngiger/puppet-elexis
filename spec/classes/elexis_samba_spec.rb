@@ -16,18 +16,23 @@
 #
 require 'spec_helper'
 
-describe 'elexis::awesome' do
+describe 'elexis::samba' do
+  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
+    it { should compile }
     it { should compile.with_all_deps }
   end
-end
-
-describe 'elexis::awesome' do
-  context 'when running under Debian with ensure' do
- let(:params) { {
-            :ensure                  => true,
-              }}
-    it { should contain_package('awesome') }
+  context 'when running with default parameters' do
+    let(:params) { {:ensure                  => 'present', }}
+    it { should compile }
+    it { should compile.with_all_deps }
+    it { should contain_package('cups-pdf').with_ensure('present') }
+    it { should contain_package('cups-bsd').with_ensure('present') }
+    it { should contain_package('augeas-tools').with_ensure('present') }
+    it { should contain_file('/usr/local/bin/cups-pdf-renamer') }
+    it { should contain_file('/opt/samba/elexis/neu').with_ensure('directory') }
+    it { should contain_file('/etc/samba/smb.conf') }
+    it { should contain_exec('/etc/samba/smb.conf.tested') }
+    it { should contain_service('samba') }
   end
 end
-

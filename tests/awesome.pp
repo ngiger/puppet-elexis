@@ -1,1 +1,2 @@
-include elexis::awesome
+class {"elexis::awesome":}
+

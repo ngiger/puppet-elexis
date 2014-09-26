@@ -16,22 +16,27 @@
 #
 require 'spec_helper'
 
-describe 'elexis::bootstrap' do
+describe 'elexis::windows' do
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    # it { should have_resource_count(4) }
-    it { should contain_user('elexis') }
-    it { should contain_group('elexis') }
-    it { should contain_file('/etc/sudoers.d/elexis') }
-    it { should contain_file('/opt/downloads') }
-  end
-  context 'when running under Debian with ensure' do
-  let(:params) { {:ensure => true,}}
-    it { should contain_package('eclipse-rcp') }
-    it { should contain_exec('bootstrap-elexis-3') }
-    it { should contain_vcsrepo('/opt/bootstrap-elexis-3') }
+    it { should_not contain_package('wine') }
+    it { should_not contain_package('xvfb') }
   end
 end
 
+describe 'elexis::windows' do
+  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  context 'when running with default parameters' do
+    let(:params) { {:ensure => 'true',}}
+#    it { should compile }
+#    it { should compile.with_all_deps }
+    it { should contain_package('wine') }
+    it { should contain_package('xvfb') }
+    it { should contain_wget__fetch('http://download.java.net/openjdk/jdk7/promoted/b146/gpl/openjdk-7-b146-windows-i586-20_jun_2011.zip') }
+    it { should contain_exec('/home/samba/elexis-windows/current') }
+    it { should contain_exec('unzip_/home/samba/java-se-7-ri/bin/java.exe') }
+    it { should contain_elexis__unzip('unzip_open_jdk_wine').with_dest('/home/samba/java-se-7-ri/bin/java.exe') }    
+  end
+end

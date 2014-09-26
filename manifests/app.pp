@@ -8,7 +8,7 @@
 class elexis::app($version = '2.1.7.1',
   $url = 'http://srv.elexis.info/jenkins/view/2.1.7/job/elexis-2.1.7-Buildr-OpenSource/259/artifact/deploy/elexis-2.1.7.120131114-installer.jar',
   $root = '/usr/local/elexis')
- inherits elexis::common {
+ inherits elexis::params {
 
 # install elexis from the download site, either the deb or via install # TODO:
 }

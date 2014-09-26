@@ -1,2 +1,2 @@
-class{"elexis::bootstrap": }
+class{"elexis::bootstrap": ensure => true}
 

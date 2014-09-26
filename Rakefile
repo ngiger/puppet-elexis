@@ -1,13 +1,13 @@
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppetlabs_spec_helper/module_spec_helper'
+require 'puppetlabs_spec_helper/puppetlabs_spec_helper'
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
 
-PuppetLint.configuration.fail_on_warnings
+# PuppetLint.configuration.fail_on_warnings
 PuppetLint.configuration.send('disable_80chars')
 PuppetLint.configuration.send('disable_autoloader_layout')
 PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "pkg/**/*.pp"]
-# fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
 
 desc "Validate manifests, templates, and ruby files"
 task :validate do

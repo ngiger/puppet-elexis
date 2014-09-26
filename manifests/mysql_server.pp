@@ -74,8 +74,7 @@ class elexis::mysql_server(
     user       => 'reader@localhost',
   },
 },
-) {
-  include elexis::admin
+) inherits elexis::params {
   ensure_resource('user', 'mysql', { ensure => present})
   $mysql_dump_script       = '/usr/local/bin/mysql_dump_elexis.rb'
   $mysql_load_main_script  = '/usr/local/bin/mysql_load_main_db.rb'
@@ -94,7 +93,7 @@ class elexis::mysql_server(
         ensure  => 'present',
         charset => 'utf8',
         require => Class['mysql::server'],
-      }    
+      }
     }
 
     if $mysql_tst_db_name {
@@ -138,16 +137,16 @@ class elexis::mysql_server(
     }
 
     exec { $mysql_backup_dir:
-      command      => "mkdir -p ${mysql_backup_dir}",
-      path         => '/usr/bin:/bin',
-      creates      => $mysql_backup_dir
+      command => "mkdir -p ${mysql_backup_dir}",
+      path    => '/usr/bin:/bin',
+      creates => $mysql_backup_dir
       }
 
     rsnapshot::crontab{'mysql_server':
       name         => 'mysql_server',
       excludes     => [],
-      includes     => ["${mysql_dump_dir}"],
-      destination  => "$mysql_backup_dir",
+      includes     => [$mysql_dump_dir],
+      destination  => $mysql_backup_dir,
       time_hourly  => $backup_hourly,
       time_daily   => $backup_daily,
       time_weekly  => $backup_weekly,

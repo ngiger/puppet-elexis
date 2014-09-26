@@ -1,2 +1,2 @@
 notify { 'test: elexis::latex': }
-include elexis::latex
+class{"elexis::latex": ensure => true }

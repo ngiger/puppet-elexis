@@ -1,1 +1,1 @@
-include elexis::admin
+class {"elexis::admin":}

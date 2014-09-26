@@ -2,7 +2,7 @@
 
 
 class elexis::awesome($ensure = false)
-  inherits elexis::common {
+  inherits elexis::params {
 
   if ($ensure) {
   # we need x-display-manager, e.g. slim

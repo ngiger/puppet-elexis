@@ -16,18 +16,22 @@
 #
 require 'spec_helper'
 
-describe 'elexis::awesome' do
+describe 'elexis::praxis_wiki' do
+  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
-    it { should compile.with_all_deps }
+    it { should contain_package('gollum') }
+    it { should contain_package('wikicloth') }
+    it { should contain_package('RedCloth') }
+    it { should contain_package('libxml2-dev') }    
+  end
+  context 'when running with default parameters' do
+    let(:params) { {:ensure                  => 'present', }}
+    it { should contain_package('gollum') }
+    it { should contain_package('wikicloth') }
+    it { should contain_package('RedCloth') }
+    it { should contain_package('libxml2-dev') }    
+    it { should contain_service('praxis_wiki') }    
+    it { should contain_exec('/var/lib/service/praxis_wiki/run') }    
+    it { should contain_file('/usr/local/bin/start_praxis_wiki.sh') }    
   end
 end
-
-describe 'elexis::awesome' do
-  context 'when running under Debian with ensure' do
- let(:params) { {
-            :ensure                  => true,
-              }}
-    it { should contain_package('awesome') }
-  end
-end
-

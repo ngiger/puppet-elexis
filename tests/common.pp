@@ -1,2 +1,2 @@
-include elexis::common
+class {"elexis::common":}
   

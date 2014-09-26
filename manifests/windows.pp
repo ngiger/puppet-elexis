@@ -1,26 +1,26 @@
 # == Class: elexis::windows
 #
-# Installs the (Med-)Elexis Version into a $sambaBase/<version>
+# Installs the (Med-)Elexis Version into a $samba_base/<version>
 # for WINDOWS!!!
 # We use OpenJDK7 under wine to run the installer (from http://jdk7.java.net/java-se-7-ri/)
 class elexis::windows (
   $ensure                 = false,
-  $programURL             = 'http://www.medelexis.ch/dl21.php?file=medelexis-windows',
   $version                = 'current',
-  $installBase            = "${sambaBase}/elexis-windows",
+  $install_base            = "${samba_base}/elexis-windows",
   $auto_windows_template  = 'elexis/auto_install.xml.erb'
-) inherits elexis::samba {
+) inherits elexis::common {
 
-  if ($ensure ) {
-  $installDir         =   "${installBase}/${version}"
-#  notify{"windows Elexis $version from $programURL into $installBase": }
+  if ($ensure == false ) {
+    notice("Skipping elexis::windows as ensure is ${ensure} == false")
+  } else {
+  $installDir         =   "${install_base}/${version}"
   
   # just a few 80 MB
-  $openjdkUrl = 'http://download.java.net/openjdk/jdk7/promoted/b146/gpl/openjdk-7-b146-windows-i586-20_jun_2011.zip'
-  $openjdkDownload = "${installBase}/openjdk-7-b146-windows-i586-20_jun_2011.zip"
+  $openjdk_url = 'http://download.java.net/openjdk/jdk7/promoted/b146/gpl/openjdk-7-b146-windows-i586-20_jun_2011.zip'
+  $openjdk_download = "${install_base}/openjdk-7-b146-windows-i586-20_jun_2011.zip"
 
   package{['xvfb', 'wine']: }
-  
+
   if !defined(Exec[$installDir]) {
     exec { $installDir:
 #      command => "/bin/mkdir -p $installDir && /bin/chown elexis $installDir",
@@ -31,27 +31,21 @@ class elexis::windows (
       require => [ User['elexis'] ],
     }
   }
+  wget::fetch { $openjdk_url:
+        destination => $openjdk_download,
+        timeout     => 0,
+        verbose     => false,
+      }
   
-  exec { $openjdkDownload:
-    command => "wget ${openjdkUrl}  --output-document=${openjdkDownload}",
-#    user  => 'root',
-    creates => $openjdkDownload,
-    require => [ Exec[$installDir] ],
-    path    => '/usr/local/bin:/usr/bin:/bin',
+  $installed_java_exe = "${samba_base}/java-se-7-ri/bin/java.exe"
+  elexis::unzip{'unzip_open_jdk_wine':
+    zipfile => $openjdk_download,
+    dest    => $installed_java_exe,
+    require => [ Wget::Fetch[$openjdk_url] ],
   }
-  
-  $installed_java_exe = "${sambaBase}/java-se-7-ri/bin/java.exe"
-  exec { $installed_java_exe:
-    command => "unzip ${openjdkDownload}",
-#    user  => 'root',
-    cwd     => $sambaBase,
-    creates => $installed_java_exe,
-    require => [ Exec[$openjdkDownload] ],
-    path    => 'usr/local/bin:/usr/bin:/bin',
-  }
-  
-  $autoInstallXml = "${installBase}/auto_windows-${version}.xml"
-  $installer      = "${installBase}/elexis-installer-${version}.jar"
+
+  $autoInstallXml = "${install_base}/auto_windows-${version}.xml"
+  $installer      = "${install_base}/elexis-installer-${version}.jar"
 #  notify{"windows $auto_windows_template via $autoInstallXml and $installer  $installDir": }
   
   file { $autoInstallXml:
@@ -86,7 +80,8 @@ class elexis::windows (
     command => "wine ${installed_java_exe} -jar ${installer} ${autoInstallXml}",
     creates => $elexis_windows_exe,
     require => [ File[$autoInstallXml],
-      Exec[$installDir, "wget_${installer}", $installed_java_exe],
+      Elexis::Unzip['unzip_open_jdk_wine'],
+      Exec[$installDir, "wget_${installer}"],
       Package['wine', 'xvfb'], # we need an X environment for wine
       ],
     path    => '/usr/bin:/bin',

@@ -16,18 +16,10 @@
 #
 require 'spec_helper'
 
-describe 'elexis::awesome' do
+describe 'elexis::admin' do
   context 'when running with default parameters' do
+    it { should compile }
     it { should compile.with_all_deps }
+    it { should have_resource_count(0) }
   end
 end
-
-describe 'elexis::awesome' do
-  context 'when running under Debian with ensure' do
- let(:params) { {
-            :ensure                  => true,
-              }}
-    it { should contain_package('awesome') }
-  end
-end
-

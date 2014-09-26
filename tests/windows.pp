@@ -1,1 +1,1 @@
-include elexis::windows
+class {"elexis::windows": ensure => true }

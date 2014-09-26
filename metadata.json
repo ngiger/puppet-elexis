@@ -9,11 +9,15 @@
   "issues_url": null,
   "description": "Puppet module for elexis. Install",
   "dependencies": [
-    {"name":"puppetlabs/apt","version_requirement":">= 1.0.0"}
-    {"name":"puppetlabs/mysql","version_requirement":">= 1.0.0"}
-    {"name":"puppetlabs/concat","version_requirement":">= 1.0.0"}
-    {"name":"puppetlabs/postgresql","version_requirement":">= 1.0.0"}
-    {"name":"puppet/rsnapshot","version_requirement":">= 1.0.0  "}
-    {"name":"jproyo/git","version_requirement":">= 0.1.0"}
+    {"name":"puppetlabs/apt","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs/java","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs/mysql","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs/concat","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs/postgresql","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs/vcsrepo","version_requirement":">= 1.0.0"},
+    {"name":"maestrodev/wget","version_requirement":">= 1.0.0"},
+    {"name":"ajjahn/samba","version_requirement":">= 1.0.0"},
+    {"name":"puppet/rsnapshot","version_requirement":">= 1.0.0  "},
+    {"name":"erwbgy/ssh","version_requirement":">= 0.2.0  "}
   ]
 }

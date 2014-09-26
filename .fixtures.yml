@@ -7,10 +7,15 @@ fixtures:
           ref: "4.3.2"
       apt: "puppetlabs/apt"
       concat: "puppetlabs/concat"
+      java: "puppetlabs/java"
       mysql: "puppetlabs/mysql"
+      wget: "maestrodev/wget"
       postgresql: "puppetlabs/postgresql"
-      git:        "jproyo/git"
+      vcsrepo: "puppetlabs/vcsrepo"
+      git: "puppetlabs/git"
+      ssh: 'erwbgy/ssh'
   repositories:
     rsnapshot: "git://github.com/ngiger/puppet-rsnapshot.git"
+    samba:     "git://github.com/ngiger/puppet-samba.git"
   symlinks:
     elexis: "#{source_dir}"

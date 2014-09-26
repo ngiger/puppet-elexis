@@ -16,18 +16,12 @@
 #
 require 'spec_helper'
 
-describe 'elexis::awesome' do
-  context 'when running with default parameters' do
-    it { should compile.with_all_deps }
+describe 'elexis::unzip' do
+  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  context 'when running under Debian with defaults' do
+    let(:title) { 'defaults' }
+    let(:params) { {:zipfile => '/tmp/tst.zip', :dest => '/tmp/dest'}}
+#    it { should compile }
+    it { should contain_exec('unzip_/tmp/dest') }
   end
 end
-
-describe 'elexis::awesome' do
-  context 'when running under Debian with ensure' do
- let(:params) { {
-            :ensure                  => true,
-              }}
-    it { should contain_package('awesome') }
-  end
-end
-

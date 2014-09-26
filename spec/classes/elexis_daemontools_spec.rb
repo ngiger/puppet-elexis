@@ -16,18 +16,13 @@
 #
 require 'spec_helper'
 
-describe 'elexis::awesome' do
+describe 'elexis::daemontools' do
+  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
+    it { should compile }
     it { should compile.with_all_deps }
+    it { should contain_package('daemontools-run') }
+    it { should contain_file('/var/lib/service').with_ensure('directory') }
+    it { should contain_file('/usr/local/bin/create_service.rb') }
   end
 end
-
-describe 'elexis::awesome' do
-  context 'when running under Debian with ensure' do
- let(:params) { {
-            :ensure                  => true,
-              }}
-    it { should contain_package('awesome') }
-  end
-end
-

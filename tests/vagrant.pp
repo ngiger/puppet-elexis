@@ -1,1 +1,1 @@
-require elexis::vagrant
+class {"elexis::vagrant": ensure => true }

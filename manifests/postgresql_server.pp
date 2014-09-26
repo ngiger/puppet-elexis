@@ -23,41 +23,41 @@ class elexis::postgresql_server(
   $pg_hba_allow_network = '192.168.1.0/24',
   $pg_setup_hot_sync    = false,
   $pg_dbs               = [
-    { 
+    {
       db_name => 'elexis',
-      db_user => 'elexis', 
-      db_password => 'elexisTest', 
-      db_privileges => 'ALL', 
-      encoding => 'utf-8', 
-      locale => '  de_CH', 
+      db_user => 'elexis',
+      db_password => 'elexisTest',
+      db_privileges => 'ALL',
+      encoding => 'utf-8',
+      locale => '  de_CH',
     },
-    { 
+    {
       db_name => 'test',
-      db_user => 'elexis', 
-      db_password => 'elexisTest', 
-      db_privileges => 'ALL', 
-      encoding => 'utf-8', 
-      locale => '  de_CH', 
+      db_user => 'elexis',
+      db_password => 'elexisTest',
+      db_privileges => 'ALL',
+      encoding => 'utf-8',
+      locale => '  de_CH',
     },
-    { 
+    {
       db_name => 'elexis',
-      db_user => 'reader', 
-      db_password => 'elexisTest', 
-      db_privileges => 'SELECT', 
-      encoding => 'utf-8', 
-      locale => '  de_CH', 
+      db_user => 'reader',
+      db_password => 'elexisTest',
+      db_privileges => 'SELECT',
+      encoding => 'utf-8',
+      locale => '  de_CH',
     },
-    { 
+    {
       db_name => 'test',
-      db_user => 'reader', 
-      db_password => 'elexisTest', 
-      db_privileges => 'SELECT', 
-      encoding => 'utf-8', 
-      locale => '  de_CH', 
+      db_user => 'reader',
+      db_password => 'elexisTest',
+      db_privileges => 'SELECT',
+      encoding => 'utf-8',
+      locale => '  de_CH',
     },
   ],
   $version              = '9.1',
-)  inherits elexis::admin {
+) inherits elexis::params {
   $pg_dump_script       = '/usr/local/bin/pg_dump_elexis.rb'
   $pg_load_main_script  = '/usr/local/bin/pg_load_main_db.rb'
   $pg_load_test_script  = '/usr/local/bin/pg_load_test_db.rb'
@@ -71,7 +71,7 @@ class elexis::postgresql_server(
       manage_package_repo => true,
       encoding            => 'UTF8',
       locale              => 'de_CH.UTF-8',
-      version             => "$version",
+      version             => $version,
     }
     class { 'postgresql::server':
       listen_addresses => '*',
@@ -272,8 +272,8 @@ class elexis::postgresql_server(
     rsnapshot::crontab{'pg_server':
       name         => 'pg_server',
       excludes     => [],
-      includes     => ["${pg_dump_dir}"],
-      destination  => "$pg_backup_dir",
+      includes     => [$pg_dump_dir],
+      destination  => $pg_backup_dir,
       time_hourly  => $backup_hourly,
       time_daily   => $backup_daily,
       time_weekly  => $backup_weekly,

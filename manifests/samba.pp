@@ -4,9 +4,9 @@
 # TODO: Create initial password for all Samba-Users
 class elexis::samba (
   $ensure               = absent,
-  $sambaBase            = '/opt/samba',
-  $sambaPraxis          = '/opt/samba/elexis',
-  $sambaPdf             = '/opt/samba/elexis/neu',
+  $samba_base           = '/opt/samba',
+  $samba_praxis         = '/opt/samba/elexis',
+  $samba_pdf            = '/opt/samba/elexis/neu',
 ) inherits elexis::common {
   if ($ensure != absent) {
   include samba
@@ -16,30 +16,15 @@ class elexis::samba (
   ensure_packages(['augeas-lenses', 'augeas-tools', 'libaugeas-ruby', 'cups-pdf', 'cups-bsd'])
 
   class {'samba::server':
-    server_string        => hiera('samba::server::server_string', 'Samba Server for an Elexis practice'),
-    interfaces           => hiera('samba::server::interfaces',  'eth0 lo'),
-    security             => hiera('samba::server::security', 'share'),
-    unix_password_sync   => hiera('samba::server::unix_password_sync', true),
-    workgroup            => hiera('samba::server::workgroup', 'Elexis-Praxis'),
-    bind_interfaces_only => hiera('samba::server::bind_interfaces_only ', true),
-    logon_path           => hiera('samba::server::logon_path', '\\%L\profile\%U'),
-    logon_home           => 'Z:',
-    logon_script         => 'login.bat',
-    passwd_chat          => '*Enter\snew\sUNIX\spassword:* %n\n *Retype\snew\sUNIX\spassword:* %n\n .',
+    server_string        => 'Samba Server for an Elexis practice',
+    interfaces           => 'eth0 lo',
+    security             => 'share',
+    unix_password_sync   => true,
+    workgroup            => 'Elexis-Praxis',
+    bind_interfaces_only => true,
     require              => [ Package['augeas-lenses', 'augeas-tools', 'libaugeas-ruby'], ],
   }
 
-  if (hiera('samba::server::pdc', false)) {
-    class{'samba::server::pdc':
-      local_master     => 'Yes',
-      preferred_master => 'Yes',
-      domain_master    => 'Yes',
-      domain_logons    => 'Yes',
-      wins_support     => Yes,
-      panic_action     => '/usr/share/samba/panic-action %d',
-      time_server      => Yes,
-    }
-  }
   $tested_smb_conf = '/etc/samba/smb.conf.tested'
   exec{$tested_smb_conf:
     command   => "/usr/bin/testparm /etc/samba/smb.conf >${tested_smb_conf}",
@@ -50,7 +35,7 @@ class elexis::samba (
     subscribe => Service['samba'],
   }
 
-  file{[$sambaBase, $sambaPraxis,  $sambaPdf]:
+  file{[$samba_base, $samba_praxis,  $samba_pdf]:
     ensure  => directory,
     group   => 'elexis',
     owner   => 'elexis',
@@ -81,7 +66,7 @@ FILENAME=`basename \$1`
 # CURRENT_GROUP=\"\${3}\"
 DATE=`date +\"%Y-%m-%d_%H:%M:%S\"`
 umask=022
-sudo -u \$2 mv \$1 ${sambaPdf}/\$FILENAME && logger cups-pdf moved \$1 to ${sambaPdf}/\$FILENAME
+sudo -u \$2 mv \$1 ${samba_pdf}/\$FILENAME && logger cups-pdf moved \$1 to ${samba_pdf}/\$FILENAME
 ",
   mode    => '0755',
   }
@@ -128,7 +113,7 @@ sudo -u \$2 mv \$1 ${sambaPdf}/\$FILENAME && logger cups-pdf moved \$1 to ${samb
   if (hiera('samba::server::pdf-ausgabe', false)) {
     samba::server::share {'pdf-ausgabe':
       comment        => 'Ausgabe für Drucken in Datei via PDF',
-      path           => $sambaPdf,
+      path           => $samba_pdf,
       browsable      => true,
       read_only      => true,
       force_user     => '%S',
@@ -177,22 +162,22 @@ sudo -u \$2 mv \$1 ${sambaPdf}/\$FILENAME && logger cups-pdf moved \$1 to ${samb
     ensure_packages(['wget'])
     $win_version = '4.0.0.3'
     $mac_version = '4.0.1.0'
-    $wget_x2go_win_client = "${sambaBase}/X2GoClient_latest_mswin32-setup.exe"
-    $wget_x2go_mac_client = "${sambaBase}/X2GoClient_latest_macosx.dmg"
+    $wget_x2go_win_client = "${samba_base}/X2GoClient_latest_mswin32-setup.exe"
+    $wget_x2go_mac_client = "${samba_base}/X2GoClient_latest_macosx.dmg"
     
     exec { $wget_x2go_mac_client:
-      cwd     => $sambaBase,
+      cwd     => $samba_base,
       command => 'wget --timestamping http://code.x2go.org/releases/X2GoClient_latest_mswin32-setup.exe',
-      require => [File[$sambaBase], Package['wget'] ],
+      require => [File[$samba_base], Package['wget'] ],
       path    => '/usr/bin:/bin',
       timeout => 1800, # allow maximal 30 minutes for download
       creates => $wget_x2go_mac_client,
     }
     
     exec { $wget_x2go_win_client:
-      cwd     => $sambaBase,
+      cwd     => $samba_base,
       command => 'wget --timestamping http://code.x2go.org/releases/X2GoClient_latest_macosx.dmg',
-      require => [File[$sambaBase], Package['wget'] ],
+      require => [File[$samba_base], Package['wget'] ],
       path    => '/usr/bin:/bin',
       timeout => 1800, # allow maximal 30 minutes for download
       creates => $wget_x2go_mac_client,

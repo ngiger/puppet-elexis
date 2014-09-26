@@ -24,7 +24,7 @@ end
 
 describe 'elexis::kde' do
   context 'when running under Debian with ensure' do
-  let(:params) { {:ensure                  => 'true', }}
+  let(:params) { {:ensure                  => true, }}
     it { should compile.with_all_deps }
     it { should contain_package('task-german-kde-desktop') }
     it { should contain_package('kde-plasma-desktop').with_ensure('present') }
