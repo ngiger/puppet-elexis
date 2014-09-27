@@ -17,7 +17,7 @@ define elexis::demodb (
   file {$home_elexis :
     ensure  => directory,
     owner   => $user,
-    group   => $users,
+    group   => $user,
     mode    => '0666',
     require => [ User[$user] ];
   }

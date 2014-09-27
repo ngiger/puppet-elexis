@@ -2,6 +2,9 @@
 # encoding: utf-8
 # A utility class to easily add a user for Elexis
 include elexis::common
+
+# define a key value pair
+# - add some stuff
 define ensure_key_value($file, $key, $value, $delimiter = ' ') {
     # passing the values via the environment simplifies quoting.
     Exec {
@@ -25,6 +28,9 @@ define ensure_key_value($file, $key, $value, $delimiter = ' ') {
     }
 }
 
+# set a password hash in /etc/shadow
+# Not used at the moment. We will probably use clear text passwords
+# from hiera
 define setpass($hash, $file='/etc/shadow') {
   ensure_key_value{ "set_pass_${name}":
     file      => $file,
@@ -35,6 +41,8 @@ define setpass($hash, $file='/etc/shadow') {
     }
 }
 
+# Define an elexis user
+# from hiera
 define elexis::user(
   $username,
   $uid,
@@ -46,12 +54,12 @@ define elexis::user(
   $shell  = '/bin/sh',
 ) {
   ensure_packages(['ruby-shadow']) # needed for managing password
-  $splitted = split($homes, ',')
+  $splitted = split($::homes, ',')
   if ("/home/${username}" in $splitted)  {
     user{$username:
+      ensure     => $ensure,
       name       => $username,
       managehome => true,
-      ensure     => $ensure,
       groups     => $groups,
       shell      => $shell,
       uid        => $uid,
@@ -61,8 +69,8 @@ define elexis::user(
     ensure_resource('group', $username, {'ensure' => 'present', 'gid' => $gid })
   } else {
     user{"${username}${gid}":
-      name    => $username,
       ensure  => $ensure,
+      name    => $username,
       groups  => $groups,
       comment => $comment, # Motzt bei nicht US-ASCII Kommentaren wir Müller, aber nur wenn er nichts zu tun hat
       shell   => $shell,

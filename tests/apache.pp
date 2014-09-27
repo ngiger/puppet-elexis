@@ -10,7 +10,7 @@ apache::vhost { 'ssl.example.com':
       ssl     => true,
     }
 apache::vhost { 'subdomain.example.com':
-     # ip      => '127.0.0.1',
+      # ip      => '127.0.0.1',
       port    => '80',
       docroot => '/var/www/subdomain',
 }

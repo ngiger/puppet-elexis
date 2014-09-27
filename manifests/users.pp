@@ -4,9 +4,11 @@
 # A utility class to easily add users for Elexis
 # The definitions are found under elexis::params
 #
-class elexis::users() inherits elexis::common { 
+class elexis::users() inherits elexis::common {
   elexis_add_users{$::elexis::params::user_definition: }
 }
+# Add all elexis users
+# as defined from $::elexis::params::user_definition
 
 define elexis_add_users(
 ) {
@@ -24,6 +26,7 @@ define elexis_add_users(
   # der kommentar schon definiert wurde
   if ($username != undef) {
     elexis::user{$username:
+      ensure   => $ensure,
       username => $username,
       password => $title['password'],
       uid      => $uid,
@@ -31,7 +34,6 @@ define elexis_add_users(
       groups   => $groups,
       comment  => $comment,
       shell    => $shell,
-      ensure   => $ensure,
       require  => User[$::elexis::params::main_user], # elexis must be created first!
     }
   }

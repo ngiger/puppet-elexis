@@ -1,1 +1,1 @@
-class {"elexis::params":}
+class {'elexis::params':}

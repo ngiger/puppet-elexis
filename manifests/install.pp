@@ -85,7 +85,7 @@ define elexis::install (
   $full_exec_path = "${install_dir}/${exe_name}"
   $director_url   = 'http://mirror.switch.ch/eclipse/tools/buckminster/products/director_latest.zip'
   $director_zip   = "${::elexis::params::download_dir}/director_latest.zip"
-  $director_exe   = "/usr/local/bin/director/director"
+  $director_exe   = '/usr/local/bin/director/director'
   $elexis_zip     = "${::elexis::params::download_dir}/${title}.zip"
 
   file { $install_base:
@@ -131,7 +131,7 @@ define elexis::install (
         Elexis::Unzip['director_exe'],
         ]
     }
-   
+
     $precondition_for_elexis = Exec[$install_helper]
 
   } else { # use full zip

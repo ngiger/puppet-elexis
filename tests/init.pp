@@ -1,1 +1,1 @@
-class {"elexis":}
+class {'elexis':}

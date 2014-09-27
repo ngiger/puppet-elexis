@@ -17,13 +17,13 @@ define elexis::unzip (
       creates => $creates,
       user    => $user,
       group   => $group,
-    }  
+    }
   } else {
     exec { "unzip_${dest}":
       command => "/usr/bin/unzip -d ${dest} -o -qq ${zipfile}",
       require => [ Package['unzip'] ],
       user    => $user,
       group   => $group,
-    }  
+    }
   }
 }

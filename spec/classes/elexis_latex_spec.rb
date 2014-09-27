@@ -21,5 +21,16 @@ describe 'elexis::latex' do
     it { should compile }
     it { should compile.with_all_deps }
     it { should have_resource_count(0) }
+    it { should_not contain_package('texlive') }
+  end
+  context 'when running under Debian with ensure' do
+  let(:params) { {:ensure => true,}}
+    it { should compile }
+    it { should compile.with_all_deps }
+    it { should contain_package('texlive') }
+    it { should contain_file('/opt/downloads/install_floatflt.sh') }
+    it { should contain_exec('/usr/share/texmf/tex/latex/misc') }
+    it { should contain_exec('install_floatflt.sty').with_command('/opt/downloads/install_floatflt.sh') }
+    
   end
 end

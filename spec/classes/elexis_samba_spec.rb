@@ -23,7 +23,7 @@ describe 'elexis::samba' do
     it { should compile.with_all_deps }
   end
   context 'when running with default parameters' do
-    let(:params) { {:ensure                  => 'present', }}
+    let(:params) { {:ensure => 'present', }}
     it { should compile }
     it { should compile.with_all_deps }
     it { should contain_package('cups-pdf').with_ensure('present') }
@@ -34,5 +34,36 @@ describe 'elexis::samba' do
     it { should contain_file('/etc/samba/smb.conf') }
     it { should contain_exec('/etc/samba/smb.conf.tested') }
     it { should contain_service('samba') }
+  end
+  
+  context 'when running with parameters from mustermann' do
+    let(:params) { {:ensure => 'present', }}
+    let :samba do
+      {
+        :server     =>  { :interfaces => 'eth0' },
+      }
+    end
+    it { should compile }
+    it { should compile.with_all_deps }
+xxx = %(  
+samba::server::interfaces: eth0
+samba::server::workgroup: 'Praxis Elexis'
+samba::server::server_string: '%h'
+
+samba::server::security: 'user'
+
+samba::server::passwd_chat: '*Enter\snew\sUNIX\spassword:* %n\n *Retype\snew\sUNIX\spassword:* %n\n .'
+samba::server::passwd_program: '/usr/bin/passwd %u'
+samba::server::pdc: true
+samba::server::shares:
+  -
+    name: profile
+    comment: Benutzerprofile
+    path: /home/samba/profile
+    read_only: false
+    force_create mode: 0600
+    force_directory mode: '0700'
+    browsable: false
+)
   end
 end

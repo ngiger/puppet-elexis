@@ -1,2 +1,2 @@
-class {"elexis::common":}
+class {'elexis::common':}
   

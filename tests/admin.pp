@@ -1,1 +1,1 @@
-class {"elexis::admin":}
+class {'elexis::admin':}

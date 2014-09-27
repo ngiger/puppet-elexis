@@ -16,7 +16,7 @@ class elexis::common() inherits elexis::params {
   }
   group{$main_name:
     ensure => present,
-    gid => $main_gid,
+    gid    => $main_gid,
   }
   user{$main_name:
     ensure => present,

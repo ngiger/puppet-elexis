@@ -1,1 +1,1 @@
-class {"elexis::vagrant": ensure => true }
+class {'elexis::vagrant': ensure => true }

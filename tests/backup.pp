@@ -1,2 +1,2 @@
-class {"elexis::backup":}
+class {'elexis::backup':}
   

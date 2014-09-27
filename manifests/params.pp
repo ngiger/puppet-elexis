@@ -60,6 +60,6 @@ class elexis::params {
                                   password    => 'elexisTest', # if nil it will not be set
                                   shell       => '/bin/bash',
                                 }
-                             ]
+                              ]
 }
 

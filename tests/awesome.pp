@@ -1,2 +1,2 @@
-class {"elexis::awesome":}
+class {'elexis::awesome':}
 

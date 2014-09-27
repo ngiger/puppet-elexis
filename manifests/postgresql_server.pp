@@ -114,16 +114,16 @@ class elexis::postgresql_server(
       }
 
     # now comes the whole setup for online backup on server and backup
-    if ($hostname== 'server') {
+    if ($::hostname== 'server') {
       $backup_partner       = 'backup'
       $backup_dir           = '/opt/backups_from_backup'
       $reverse_backup_dir   = '/opt/backups_from_server'
-    } else { if ($hostname== 'backup') {
+    } else { if ($::hostname== 'backup') {
       $backup_partner       = 'server'
       $backup_dir           = '/opt/backups_from_server'
       $reverse_backup_dir   = '/opt/backups_from_backup'
     } else  {
-      notify{"host ${hostname} is neither backup nor server": }
+      notify{"host ${::hostname} is neither backup nor server": }
     } }
     # notify{"pg: wal $backup_dir $reverse_backup_dir": }
     if ($backup_dir != '')  {
@@ -282,6 +282,8 @@ class elexis::postgresql_server(
   }
 }
 
+#  define a single database users
+#  more ist not to be said
 define elexis::pg_dbuser(
   $db_user,
   $db_name,
@@ -308,6 +310,8 @@ define elexis::pg_dbuser(
 
   $grant_id = "GRANT ${db_user} - ${db_privileges} - ${db_name}"
   if !defined(Postgresql::Server::Database_grant[$grant_id]) {
+    # == postgresql::server::database_grant
+    # grant a privilege
     postgresql::server::database_grant{$grant_id:
       privilege => $db_privileges,
       db        => $db_name,
@@ -321,6 +325,8 @@ define elexis::pg_dbuser(
   }
 }
 
+#  define all database users
+#  more ist not to be said
 define elexis::pg_dbusers(
 ) {
   include elexis::postgresql_server

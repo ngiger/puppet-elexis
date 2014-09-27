@@ -25,7 +25,7 @@ class java {
 
         $installer =  'oracle-java7-installer'
 
-  case $operatingsystem {
+  case $::operatingsystem {
       'Debian':  {
       class { 'apt': always_apt_update    => true, }
   apt::source { 'webupd8team':
@@ -45,13 +45,13 @@ class java {
   apt::ppa { 'ppa:webupd8team/java': }
   $dependencies = Apt::Ppa['ppa:webupd8team/java']
       } # apply the redhat class
-      default:  { fail("\nx2go not (yet?) supported under ${operatingsystem}!!")
+  default:  { fail("\nx2go not (yet?) supported under ${::operatingsystem}!!")
   $dependencies = []
-          file {$x2go_dpkg_list:
+          file {'/etc/apt/sources.list.d/x2go_dpkg_list':
             ensure  => present,
             owner   => root,
-            content => "deb http://packages.x2go.org/debian ${dist} main
-deb src http://packages.x2go.org/debian ${dist} main
+            content => "deb http://packages.x2go.org/debian ${::dist} main
+deb src http://packages.x2go.org/debian ${::dist} main
 ",
           }
         

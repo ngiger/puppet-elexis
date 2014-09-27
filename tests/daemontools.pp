@@ -1,1 +1,1 @@
-class {"elexis::daemontools":}
+class {'elexis::daemontools':}

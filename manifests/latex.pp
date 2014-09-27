@@ -2,9 +2,10 @@
 
 class elexis::latex (
   $ensure   = false,
-  $destDir  = '/usr/share/texmf/tex/latex/misc',
-  $floatStyName = "${destDir}/floatflt.sty",
-  $floatfltURL = 'http://mirror.ctan.org/macros/latex/contrib/floatflt.zip',
+  $dest_dir = '/usr/share/texmf/tex/latex/misc',
+  $dest_zip = '/var/cache/floatflt.zip',
+  $float_sty_name = "$dest_dir/floatflt.sty",
+  $floatflt_url = 'http://mirror.ctan.org/macros/latex/contrib/floatflt.zip',
 ) inherits elexis::params {
   if ($ensure != false) {
   if !defined(Package['unzip']) { package {'unzip': ensure => present, } }
@@ -12,43 +13,37 @@ class elexis::latex (
     ensure => present,
   }
 
-  $cmd = "wget --timestamp -O ${dest_zip} ${floatfltURL}"
-  exec {"X${dest_zip}":
-    command => $cmd,
-    creates => $dest_zip,
-    cwd     => $elexis::download_dir,
+  wget::fetch{"${floatflt_url}": destination => $dest_zip}
+
+  exec { $dest_dir:
+    command => "mkdir -p ${dest_dir}",
     path    => '/usr/bin:/bin',
-    require => File[$elexis::download_dir],
+    creates => $dest_dir
   }
 
-  exec { $destDir:
-    command => "mkdir -p ${destDir}",
-    path    => '/usr/bin:/bin',
-    creates => $destDir
-  }
-
-  $cmdFile = "/${elexis::download_dir}/install_floatflt.sh"
-  file {$cmdFile:
+  $cmd_file = "${::elexis::params::download_dir}/install_floatflt.sh"
+  file {$cmd_file:
     mode    => '0755',
     content => "#!/bin/bash -v
-cd ${elexis::download_dir}
+cd ${::elexis::params::download_dir}
 # Just in case we got called a second time
 rm -rf floatflt
 unzip ${dest_zip}
 cd floatflt
 latex floatflt.ins
-cp floatflt.sty ${floatStyName} && texhash
+cp floatflt.sty ${float_sty_name} && texhash
 ",
   }
 
 
-  exec {$floatStyName:
-    command => $cmdFile,
-    creates => $floatStyName,
-    cwd     => $elexis::download_dir,
+  exec {'install_floatflt.sty':
+    command => $cmd_file,
+    creates => $float_sty_name,
+    cwd     => $::elexis::params::download_dir,
     path    => '/usr/bin:/bin',
-    require => [File[$cmdFile],
-    Exec[$destDir, "X${dest_zip}"],
+    require => [File[$cmd_file],
+    Exec[$dest_dir],
+    Wget::Fetch[$floatflt_url],
     Package['unzip', 'texlive', 'texinfo', 'texlive-lang-german', 'texlive-latex-extra']],
   }
 }

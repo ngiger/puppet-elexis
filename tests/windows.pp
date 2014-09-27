@@ -1,1 +1,1 @@
-class {"elexis::windows": ensure => true }
+class {'elexis::windows': ensure => true }

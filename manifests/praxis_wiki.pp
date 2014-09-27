@@ -1,13 +1,14 @@
 # Here we define all needed stuff to bring up a Wiki for an Elexis practice
 class elexis::praxis_wiki(
   $ensure  = present,
-  $vcsRoot = '/opt/src/elexis-admin.wiki'
+  $vcsRoot = '/opt/src/elexis-admin.wiki',
+  $gollum_name     = 'praxis_wiki'
 ) inherits elexis::daemontools {
   if ($ensure != present) {
     notice("Skipping elexis::praxis_wiki ensure ${ensure} != present")
   } else {
   $initFile =  '/etc/init.d/gollum'
- 
+
   ensure_packages(['make', 'libxslt1-dev', 'libxml2-dev'])
   package{  ['gollum', # markdowns is currently well supported, including live editing
     'RedCloth',  # to support textile, but no live editing at the moment
@@ -31,13 +32,12 @@ class elexis::praxis_wiki(
   $local_bin = '/usr/local/bin'
   ensure_resource('file', $local_bin, { ensure => directory} )
   $gollum_runner = "${local_bin}/start_praxis_wiki.sh"
-  $gollum_name     = 'praxis_wiki'
   $gollum_run      = "/var/lib/service/${gollum_name}/run"
   if ($ensure == absent) {
     file{  [$gollum_runner]:   ensure => absent, }
-    $service_status = stopped
+    $wiki_srv_status = stopped
   } else {
-    $service_status   = running
+    $wiki_srv_status   = running
     file{$gollum_runner:
       content => "#!/bin/bash
 sudo -iHu elexis gollum ${vcsRoot} &> ${vcsRoot}/gollum.log
@@ -63,9 +63,9 @@ sudo -iHu elexis gollum ${vcsRoot} &> ${vcsRoot}/gollum.log
   }
   
   service{$gollum_name:
-    ensure     => $service_status,
+    ensure     => $ensure,
     provider   => 'daemontools',
-    path       => $service_path,
+    path       => $::elexis::params::service_path,
     hasrestart => true,
     subscribe  => Exec[$gollum_run],
     require    => Exec[$gollum_run],
