@@ -18,12 +18,15 @@ class elexis::common() inherits elexis::params {
     ensure => present,
     gid    => $main_gid,
   }
-  user{$main_name:
-    ensure => present,
-    uid    => $elexis_main[uid],
-    gid    => $main_gid,
-    shell  => $elexis_main[shell],
-    groups => $elexis_main[groups],
+
+  if !defined(User[$main_name]) {
+    user{$main_name:
+      ensure => present,
+      uid    => $elexis_main[uid],
+      gid    => $main_gid,
+      shell  => $elexis_main[shell],
+      groups => $elexis_main[groups],
+    }
   }
 
   if ( $::elexis::params::main_allow_sudo_all == true) {

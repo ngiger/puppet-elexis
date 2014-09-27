@@ -16,7 +16,8 @@ class elexis::bootstrap(
   $install_dir = '/opt/bootstrap-elexis-3',
 ) inherits elexis::common {
   if ($ensure !=  absent and $ensure != false) {
-    ensure_packages(['eclipse-rcp', 'ruby', 'mysql-workbench', 'mysql-utilities', 'openjdk-7-jdk'], { ensure => present })
+    ensure_packages(['eclipse-rcp', 'ruby', 'mysql-workbench', 'mysql-utilities'], { ensure => present })
+    class {"java": package => $::elexis::params::java }
     vcsrepo{$install_dir:
       ensure   => present,
       provider => git,
@@ -25,7 +26,8 @@ class elexis::bootstrap(
     exec{'bootstrap-elexis-3':
       require => [
         Vcsrepo[$install_dir],
-        Package['eclipse-rcp', 'openjdk-7-jdk', 'ruby'],
+        Package['eclipse-rcp', 'ruby'],
+        Class['java'],
       ],
       command => "/usr/bin/ruby ${install_dir}/bootstrap_elexis_3_env.rb",
       creates => "${install_dir}/eclipse/eclipse",

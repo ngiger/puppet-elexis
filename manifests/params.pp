@@ -18,6 +18,7 @@ class elexis::params {
   $enfore_puppet_version  = '3.6.*'           # Upgrading to 3.7. will break many things, i suspect
   $db_type                = 'mysql'           # mysql or pg for postgresql
   $main_user              = 'elexis'          # OS-Usersname for backups, etc
+  $db_user                = 'elexis'          # main db user (all privileges for elexis databases)
   $db_main                = 'elexis'          # Name of DB to use for production
   $db_test                = 'test'            # Name of test DB to use for production
   $db_password            = 'elexisTest'      # password of main DB user

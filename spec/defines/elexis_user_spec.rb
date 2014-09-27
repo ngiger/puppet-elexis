@@ -28,7 +28,7 @@ describe 'elexis::user' do
                     }}
     
     it { should compile }
-    it { should have_resource_count(10) }
+    it { should have_resource_count(NrResourcesInElexisCommon) }
     it { should contain_elexis__user('demo') }
     it { should contain_file('Create_Home for a_user').with_path('/home/a_user').with_source( '/etc/skel').with_recurse('remote') }
     it { should contain_file('Create_Home for a_user').only_with(

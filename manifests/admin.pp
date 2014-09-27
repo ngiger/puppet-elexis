@@ -4,7 +4,7 @@ class elexis::admin (
   $ensure     = false,
   $pg_util_rb = '/usr/local/bin/pg_util.rb',
   $packages   = [fish, mosh, screen, lm-sensors, git, unzip, dlocate, mlocate, htop, curl, bzr, unattended-upgrades, anacron],
-) inherits elexis::params {
+) inherits elexis::common {
   $managed_note = hiera('managed_note', '# managed by puppet elexis::admin')
   if ($ensure == true) {
     ensure_packages($packages)
@@ -51,8 +51,6 @@ class elexis::admin (
       content => template('elexis/pg_util.rb.erb'),
     }
 
-    # we migth use https://forge.puppetlabs.com/rendhalver/sudo to manage
-    ensure_resource('user', 'elexis', { ensure => present})
     # permissions for these commands
     file { '/usr/local/bin/reboot.sh':
       content => "sudo /sbin/shutdown -r -t 30 now\n",

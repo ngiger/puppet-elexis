@@ -21,7 +21,7 @@ describe 'elexis::bootstrap' do
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    # it { should have_resource_count(4) }
+    it { should have_resource_count(NrResourcesInElexisCommon) }
     it { should contain_user('elexis') }
     it { should contain_group('elexis') }
     it { should contain_file('/etc/sudoers.d/elexis') }
@@ -29,6 +29,8 @@ describe 'elexis::bootstrap' do
   end
   context 'when running under Debian with ensure' do
   let(:params) { {:ensure => true,}}
+    it { should compile }
+    it { should compile.with_all_deps }
     it { should contain_package('eclipse-rcp') }
     it { should contain_exec('bootstrap-elexis-3') }
     it { should contain_vcsrepo('/opt/bootstrap-elexis-3') }

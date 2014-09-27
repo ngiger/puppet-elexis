@@ -21,5 +21,6 @@ describe 'elexis::common' do
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
+    it { should have_resource_count(NrResourcesInElexisCommon) }
   end
 end

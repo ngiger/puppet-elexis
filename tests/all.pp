@@ -1,21 +1,17 @@
 # include most of the elexis modules
-include elexis
-include elexis::admin
-include elexis::app
-include elexis::awesome
-include elexis::client
-include elexis::common
-include elexis::elexis_bootstrap
-# include elexis::install          
-include elexis::jenkins_commons
-include elexis::jenkins_slave
-include elexis::latex
-include elexis::mail
-include elexis::mysql_server
-include elexis::postgresql_server
-include elexis::praxis_wiki
-include elexis::samba
-#include elexis::trusted_hosts
-# don't 
-# include elexis::vagrant
-include elexis::windows
+class {'elexis::admin': ensure => true}
+class {'elexis::app':}
+class {'elexis::awesome': ensure => true}
+class {'elexis::bootstrap': ensure => true}
+class {'elexis::client': }
+# class {'elexis::jenkins_commons': ensure => true}
+# class {'elexis::jenkins_slave': ensure => true}
+class {'elexis::latex': ensure => true}
+# class {'elexis::mail': ensure => true}
+class {'elexis::mysql_server': ensure => true}
+class {'elexis::postgresql_server': ensure => true}
+class {'elexis::praxis_wiki': ensure => true}
+# class {'elexis::samba': ensure => true}
+# class {'elexis::install': ensure => true}
+class {'elexis::vagrant': ensure => true}
+class {'elexis::windows': ensure => true}

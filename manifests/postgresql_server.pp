@@ -8,10 +8,10 @@
 
 class elexis::postgresql_server(
   $ensure               = absent,
-  $pg_main_db_name      = 'elexis',
-  $pg_main_db_user      = 'elexis',
-  $pg_main_db_password  = 'elexisTest',
-  $pg_tst_db_name       = 'test',
+  $pg_main_db_name      = $::elexis::params::db_main,
+  $pg_main_db_user      = $::elexis::params::db_user,
+  $pg_main_db_password  = $::elexis::params::db_password,
+  $pg_tst_db_name       = $::elexis::params::db_test,
   $pg_dump_dir          = '/opt/backup/pg/dumps',
   $pg_backup_dir        = '/opt/backup/pg/backups',
   $backup_hourly        = '5 */4', # every 4 hours
@@ -24,40 +24,41 @@ class elexis::postgresql_server(
   $pg_setup_hot_sync    = false,
   $pg_dbs               = [
     {
-      db_name => 'elexis',
-      db_user => 'elexis',
-      db_password => 'elexisTest',
+      db_name => $::elexis::params::db_main,
+      db_user => $::elexis::params::db_user,
+      db_password => $::elexis::params::db_password,
       db_privileges => 'ALL',
       encoding => 'utf-8',
       locale => '  de_CH',
     },
     {
-      db_name => 'test',
-      db_user => 'elexis',
-      db_password => 'elexisTest',
+      db_name => $::elexis::params::db_test,
+      db_user => $::elexis::params::db_user,
+      db_password => $::elexis::params::db_password,
       db_privileges => 'ALL',
       encoding => 'utf-8',
       locale => '  de_CH',
     },
     {
-      db_name => 'elexis',
+      db_name => $::elexis::params::db_main,
       db_user => 'reader',
-      db_password => 'elexisTest',
-      db_privileges => 'SELECT',
+      db_password => $::elexis::params::db_password,
+      db_privileges => 'CONNECT',
       encoding => 'utf-8',
       locale => '  de_CH',
     },
     {
-      db_name => 'test',
+      db_name => $::elexis::params::db_test,
       db_user => 'reader',
-      db_password => 'elexisTest',
-      db_privileges => 'SELECT',
+      db_password => $::elexis::params::db_password,
+      db_privileges => 'CONNECT',
       encoding => 'utf-8',
       locale => '  de_CH',
     },
   ],
   $version              = '9.1',
 ) inherits elexis::params {
+  include elexis::admin
   $pg_dump_script       = '/usr/local/bin/pg_dump_elexis.rb'
   $pg_load_main_script  = '/usr/local/bin/pg_load_main_db.rb'
   $pg_load_test_script  = '/usr/local/bin/pg_load_test_db.rb'
@@ -244,7 +245,7 @@ class elexis::postgresql_server(
     }
       
     cron { 'pg-backup':
-        ensure  => $ensure,
+        ensure  => present,
         command => "${pg_dump_script} >/var/log/pg-backup.log 2>&1",
         user    => $pg_user,
         hour    => 23,
@@ -335,9 +336,10 @@ define elexis::pg_dbusers(
   $db_user =  $title[db_user]
   $db_password =  $title[db_password]
   $db_privileges = $title[db_privileges]
-  $myName = "${db_name}_${db_user}"
+  $pg_db_user = "${db_name}_${db_user}"
 
-  elexis::pg_dbuser{$myName:
+  notice("elexis::pg_dbusers $db_name user $db_user $pg_db_user params db_user ${::elexis::params::db_user}")
+  elexis::pg_dbuser{$pg_db_user:
     db_name       => $db_name,
     db_user       => $db_user,
     db_password   => $db_password,
