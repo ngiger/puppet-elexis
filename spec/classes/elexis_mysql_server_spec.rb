@@ -77,6 +77,7 @@ describe 'elexis::mysql_server' do
             :mysql_tst_db_name       =>'db_test',
             :mysql_dump_dir          =>'/backup/mysql/dumps',
             :root_password           =>'root_password',
+            :dump_crontab_params  => { 'minute' => 6, 'hour' => 23, 'user' => 'pg' },
                     }}
   context 'when running under Debian with changed parameters' do
     mustHavesForDumps = [ /logAction/,
@@ -104,6 +105,10 @@ describe 'elexis::mysql_server' do
 
     it { should contain_file('/etc/mysql/conf.d/lowercase.cnf').with_content(/\[mysqld\]\nlower_case_table_names=1\n/) }
     it { should contain_file('/backup/mysql/dumps').with_ensure('directory') }
+    it { should contain_cron('mysql_dump').with_command(/ionice -c3 \/usr\/local\/bin\/mysql_dump_elexis.rb/) }
+    it { should contain_cron('mysql_dump').with_minute(6  ) }
+    it { should contain_cron('mysql_dump').with_hour(23) }
+    it { should contain_cron('mysql_dump').with_user('pg') }
     it { should_not contain_file('/opt/backup/mysql/backups') }
     it { should_not contain_file('/etc/cron.d/rsnapshot_mysql_server') }
   end

@@ -70,6 +70,8 @@ describe 'elexis::postgresql_server' do
     it { should contain_file('/opt/backup/pg/dumps').with_ensure('directory') }
     it { should contain_file('/opt/backup/pg/backups').with_ensure('directory') }
     it { should_not contain_file('/etc/cron.d/rsnapshot_pg_server') }
+    it { should contain_cron('pg_dump').with_command(/ionice -c3 \/usr\/local\/bin\/pg_dump_elexis.rb/) }
+    it { should contain_cron('pg_dump').with_minute(5) }
   end
 end
 
@@ -83,6 +85,7 @@ describe 'elexis::postgresql_server' do
             :pg_tst_db_name       =>'db_test',
             :pg_dump_dir          =>'/backup/pg/dumps',
             :pg_backup_dir        =>'/backup/pg/backups',
+            :dump_crontab_params  => { 'minute' => 6, 'hour' => 23, 'user' => 'pg' },
             :pg_dbs               => [
               {
                 'db_name' => 'db_main',
@@ -145,6 +148,10 @@ describe 'elexis::postgresql_server' do
     it { should contain_postgresql__server__database_grant('GRANT db_user - ALL - db_test') }
     it { should contain_postgresql__server__database_grant('GRANT reader - CONNECT - db_main') }
     it { should contain_postgresql__server__database_grant('GRANT reader - CONNECT - db_test') }
+    it { should contain_cron('pg_dump').with_command(/ionice -c3 \/usr\/local\/bin\/pg_dump_elexis.rb/) }
+    it { should contain_cron('pg_dump').with_minute(6) }
+    it { should contain_cron('pg_dump').with_hour(23) }
+    it { should contain_cron('pg_dump').with_user('pg') }
 
     it { should contain_file('/backup/pg/dumps').with_ensure('directory') }
     it { should contain_file('/backup/pg/backups').with_ensure('directory') }

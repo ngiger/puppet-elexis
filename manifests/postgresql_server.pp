@@ -243,14 +243,14 @@ class elexis::postgresql_server(
     }
       
     ensure_resource('cron', 'pg_dump',
-      merge( $dump_crontab_params, {
+      merge( {
         ensure  => present,
         command => "${ionice} ${pg_dump_script} >>/var/log/pg_dump.log 2>&1",
         user    => $pg_user,
         require => [
           File[$pg_dump_script, $pg_backup_dir],
         ],
-        }
+        }, $dump_crontab_params
       )
     )
 
