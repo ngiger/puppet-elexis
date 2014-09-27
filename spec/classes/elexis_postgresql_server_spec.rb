@@ -16,12 +16,6 @@
 #
 require 'spec_helper'
 
-PgCronPatterns = [
- /\n5 \*\/4  \* \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.pg_server.conf hourly\s+>> \/var\/log\/rsnapshot\/pg_server.hourly.log\n/,
- /\n15 23  \* \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.pg_server.conf daily\s+>> \/var\/log\/rsnapshot\/pg_server.daily.log\n/,
- /\n30 23  \* \* 1  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.pg_server.conf weekly\s+>> \/var\/log\/rsnapshot\/pg_server.weekly.log\n/,
- /\n45 23  1 \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.pg_server.conf monthly\s+>> \/var\/log\/rsnapshot\/pg_server.monthly.log\n/,
-]
 describe 'elexis::postgresql_server' do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
@@ -75,10 +69,6 @@ describe 'elexis::postgresql_server' do
 
     it { should contain_file('/opt/backup/pg/dumps').with_ensure('directory') }
     it { should contain_file('/opt/backup/pg/backups').with_ensure('directory') }
-    it { should contain_file('/etc/cron.d/rsnapshot_pg_server').with_content(/ionice/) }
-    PgCronPatterns.each{ |pattern|  it { should contain_file('/etc/cron.d/rsnapshot_pg_server').with_content(pattern) } }
-
-    it { should contain_file('/etc/rsnapshot.pg_server.conf').with_content(/\nbackup\t\/opt\/backup\/pg\/dumps/) }
   end
 end
 

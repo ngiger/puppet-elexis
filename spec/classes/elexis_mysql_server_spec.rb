@@ -16,12 +16,6 @@
 #
 require 'spec_helper'
 
-MySQLCrontabPattern = [
-    /\n5 \*\/4  \* \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.mysql_server.conf hourly/,
-    /\n15 23  \* \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.mysql_server.conf daily/,
-    /\n30 23  \* \* 1  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.mysql_server.conf weekly/,
-    /\n45 23  1 \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.mysql_server.conf monthly/,
-]
 describe 'elexis::mysql_server' do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
@@ -67,9 +61,6 @@ describe 'elexis::mysql_server' do
     it { should contain_file('/etc/mysql/conf.d/lowercase.cnf').with_content(/\[mysqld\]\nlower_case_table_names=1\n/) }
     it { should contain_file('/opt/backup/mysql/dumps').with_ensure('directory') }
     it { should contain_file('/opt/backup/mysql/backups').with_ensure('directory') }
-    it { should contain_file('/etc/cron.d/rsnapshot_mysql_server').with_content(/ionice/) }
-    MySQLCrontabPattern.each{ |pattern|  it { should contain_file('/etc/cron.d/rsnapshot_mysql_server').with_content(pattern) } }
-    it { should contain_file('/etc/rsnapshot.mysql_server.conf').with_content(/\nbackup\t\/opt\/backup\/mysql\/dumps/) }
   end
 end
 

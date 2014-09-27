@@ -24,9 +24,7 @@ end
 
 describe 'elexis::awesome' do
   context 'when running under Debian with ensure' do
- let(:params) { {
-            :ensure                  => true,
-              }}
+    let(:params) { { :ensure => true,}}
     it { should contain_package('awesome') }
     it { should contain_elexis__params }
     it { should contain_elexis__awesome }

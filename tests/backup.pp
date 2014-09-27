@@ -1,2 +1,1 @@
-class {'elexis::backup':}
-  
+class {'elexis::backup': ensure => true}
