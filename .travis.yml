@@ -1,9 +1,9 @@
 ---
 language: ruby
-cache: bundler
 bundler_args: --without development
 #  bundle exec rake lint # crashes with an UTF-8 error. therefore excluding it
-script: "bundle exec rake validate && bundle exec rake spec SPEC_OPTS='--format documentation' && bundle exec rake clean build"
+# same for bundle exec rake validate &&
+script: "bundle exec rake spec SPEC_OPTS='--format documentation' && bundle exec rake clean build"
 matrix:
   fast_finish: true
   include:
