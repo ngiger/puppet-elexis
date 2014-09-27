@@ -54,11 +54,8 @@ class elexis::backup(
       time_weekly  => $backup_weekly,
       time_monthly => $backup_monthly,
     }
-    mkdir_p{$dirs_to_backup:}
-    mkdir_p{$backup_dir:}
+    elexis::mkdir_p{$dirs_to_backup:}
+    elexis::mkdir_p{$backup_dir:}
   }
-}
-define mkdir_p{
-  exec{"$title": command => "/bin/mkdir -p ${title}" }
 }
 

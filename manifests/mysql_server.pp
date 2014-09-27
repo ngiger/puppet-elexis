@@ -119,14 +119,13 @@ class elexis::mysql_server(
       content => template('elexis/mysql_common.rb.erb', 'elexis/mysql_dump_elexis.rb.erb'),
       require => File[$elexis::admin::pg_util_rb],
     }
+
     ensure_resource('cron', 'mysql_dump',
       merge( {
         ensure  => present,
         command => "${ionice} ${mysql_dump_script} >>/var/log/mysql_dump.log 2>&1",
         user    => $mysql_main_db_user,
-        require => [
-          File[$mysql_dump_script],
-        ],
+        require => File[$mysql_dump_script, $mysql_dump_dir],
         }, $dump_crontab_params
       )
     )

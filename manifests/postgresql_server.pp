@@ -102,11 +102,13 @@ class elexis::postgresql_server(
     elexis::pg_dbusers{$pg_dbs:}
     if ($pg_setup_hot_sync == true) {
       
+    elexis::mkdir_p{"${pg_backup_dir}/wal": }
     file  { "${pg_backup_dir}/wal/":
       ensure => directory,
       owner  => $pg_user,
       group  => $pg_group,
       mode   => '0775',
+      require => Elexis::Mkdir_p["${pg_backup_dir}/wal"]
     }
     package { 'postgresql-contrib':
       ensure => present,
@@ -226,20 +228,24 @@ class elexis::postgresql_server(
       require => File[$elexis::admin::pg_util_rb],
     }
 
+    elexis::mkdir_p{$pg_backup_dir: }
     file { $pg_backup_dir :
       ensure  => directory,
       mode    => '0755',
       recurse => true,
       owner   =>  $::postgresql::params::user,
       group   => $::postgresql::params::group,
+      require => Elexis::Mkdir_p[$pg_backup_dir],
     }
       
+    elexis::mkdir_p{$pg_dump_dir: }
     file { $pg_dump_dir :
       ensure  => directory,
       mode    => '0755',
       recurse => true,
       owner   =>  $::postgresql::params::user,
       group   => $::postgresql::params::group,
+      require => Elexis::Mkdir_p[$pg_dump_dir],
     }
       
     ensure_resource('cron', 'pg_dump',
@@ -247,9 +253,7 @@ class elexis::postgresql_server(
         ensure  => present,
         command => "${ionice} ${pg_dump_script} >>/var/log/pg_dump.log 2>&1",
         user    => $pg_user,
-        require => [
-          File[$pg_dump_script, $pg_backup_dir],
-        ],
+        require => File[$pg_dump_script, $pg_dump_dir],
         }, $dump_crontab_params
       )
     )
@@ -326,7 +330,7 @@ define elexis::pg_dbusers(
   $db_privileges = $title[db_privileges]
   $pg_db_user = "${db_name}_${db_user}"
 
-  notice("elexis::pg_dbusers $db_name user $db_user $pg_db_user params db_user ${::elexis::params::db_user}")
+  # notice("elexis::pg_dbusers $db_name user $db_user $pg_db_user params db_user ${::elexis::params::db_user}")
   elexis::pg_dbuser{$pg_db_user:
     db_name       => $db_name,
     db_user       => $db_user,
