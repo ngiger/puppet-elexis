@@ -9,12 +9,9 @@ class elexis::mysql_server(
   $mysql_main_db_user      = 'elexis',
   $mysql_main_db_password  = 'elexisTest',
   $mysql_tst_db_name       = 'test',
-  $backup_hourly           = '5 */4', # every 4 hours
-  $backup_daily            = '15 23',
-  $backup_weekly           = '30 23',
-  $backup_monthly          = '45 23',
+  $dump_crontab_params     =  { minute => 5 }, # dump every hour 5 minutes after the full hour
+  $ionice                  = 'ionice -c3',
   $mysql_dump_dir          = '/opt/backup/mysql/dumps',
-  $mysql_backup_dir        = '/opt/backup/mysql/backups',
   $root_password           = 'elexisTest',
   $users                   = {
     'elexis@localhost' =>
@@ -122,6 +119,17 @@ class elexis::mysql_server(
       content => template('elexis/mysql_common.rb.erb', 'elexis/mysql_dump_elexis.rb.erb'),
       require => File[$elexis::admin::pg_util_rb],
     }
+    ensure_resource('cron', 'mysql_dump',
+      merge( $dump_crontab_params, { 
+        ensure  => present,
+        command => "${ionice} ${mysql_dump_script} >>/var/log/mysql_dump.log 2>&1",
+        user    => $mysql_user,
+        require => [
+          File[$mysql_dump_script, $mysql_backup_dir],
+        ],
+        }
+      )
+    )
 
     file {$mysql_load_main_script:
       ensure  => present,
@@ -137,24 +145,7 @@ class elexis::mysql_server(
       require => File[$elexis::admin::pg_util_rb],
     }
 
-    exec { $mysql_backup_dir:
-      command => "mkdir -p ${mysql_backup_dir}",
-      path    => '/usr/bin:/bin',
-      creates => $mysql_backup_dir
-      }
-
-    rsnapshot::crontab{'mysql_server':
-      name         => 'mysql_server',
-      excludes     => [],
-      includes     => [$mysql_dump_dir],
-      destination  => $mysql_backup_dir,
-      time_hourly  => $backup_hourly,
-      time_daily   => $backup_daily,
-      time_weekly  => $backup_weekly,
-      time_monthly => $backup_monthly,
-    }
-
-    file { [ $mysql_dump_dir, $mysql_backup_dir]: #  $mysql_backup_dir not needed as already declared in modules/mysql/manifests/backup.pp:70
+    file { [ $mysql_dump_dir]:
       ensure  => directory,
       mode    => '0775',
       recurse => true,

@@ -69,6 +69,7 @@ describe 'elexis::postgresql_server' do
 
     it { should contain_file('/opt/backup/pg/dumps').with_ensure('directory') }
     it { should contain_file('/opt/backup/pg/backups').with_ensure('directory') }
+    it { should_not contain_file('/etc/cron.d/rsnapshot_pg_server') }
   end
 end
 
@@ -147,7 +148,6 @@ describe 'elexis::postgresql_server' do
 
     it { should contain_file('/backup/pg/dumps').with_ensure('directory') }
     it { should contain_file('/backup/pg/backups').with_ensure('directory') }
-    it { should contain_file('/etc/cron.d/rsnapshot_pg_server').with_content(/ionice/) }
-    PgCronPatterns.each{ |pattern|  it { should contain_file('/etc/cron.d/rsnapshot_pg_server').with_content(pattern) } }
+    it { should_not contain_file('/etc/cron.d/rsnapshot_pg_server') }
   end
 end

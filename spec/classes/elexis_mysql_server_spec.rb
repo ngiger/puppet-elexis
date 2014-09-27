@@ -60,7 +60,8 @@ describe 'elexis::mysql_server' do
 
     it { should contain_file('/etc/mysql/conf.d/lowercase.cnf').with_content(/\[mysqld\]\nlower_case_table_names=1\n/) }
     it { should contain_file('/opt/backup/mysql/dumps').with_ensure('directory') }
-    it { should contain_file('/opt/backup/mysql/backups').with_ensure('directory') }
+    it { should_not contain_file('/opt/backup/mysql/backups') }
+    it { should_not contain_file('/etc/cron.d/rsnapshot_mysql_server') }
   end
 end
 
@@ -75,7 +76,6 @@ describe 'elexis::mysql_server' do
             :mysql_main_db_password  =>'db_password',
             :mysql_tst_db_name       =>'db_test',
             :mysql_dump_dir          =>'/backup/mysql/dumps',
-            :mysql_backup_dir        =>'/backup/mysql/backups',
             :root_password           =>'root_password',
                     }}
   context 'when running under Debian with changed parameters' do
@@ -104,8 +104,7 @@ describe 'elexis::mysql_server' do
 
     it { should contain_file('/etc/mysql/conf.d/lowercase.cnf').with_content(/\[mysqld\]\nlower_case_table_names=1\n/) }
     it { should contain_file('/backup/mysql/dumps').with_ensure('directory') }
-    it { should contain_file('/backup/mysql/backups').with_ensure('directory') }
-    MySQLCrontabPattern.each{ |pattern|  it { should contain_file('/etc/cron.d/rsnapshot_mysql_server').with_content(pattern) } }
-    it { should contain_file('/etc/rsnapshot.mysql_server.conf').with_content(/\nbackup\t\/backup\/mysql\/dumps/) }
+    it { should_not contain_file('/opt/backup/mysql/backups') }
+    it { should_not contain_file('/etc/cron.d/rsnapshot_mysql_server') }
   end
 end

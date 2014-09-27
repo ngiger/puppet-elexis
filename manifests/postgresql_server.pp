@@ -13,15 +13,13 @@ class elexis::postgresql_server(
   $pg_main_db_password  = $::elexis::params::db_password,
   $pg_tst_db_name       = $::elexis::params::db_test,
   $pg_dump_dir          = '/opt/backup/pg/dumps',
-  $pg_backup_dir        = '/opt/backup/pg/backups',
-  $backup_hourly        = '5 */4', # every 4 hours
-  $backup_daily         = '15 23',
-  $backup_weekly        = '30 23',
-  $backup_monthly       = '45 23',
+  $dump_crontab_params  = { minute => 5 }, # dump every hour 5 minutes after the full hour
+  $ionice               = 'ionice -c3',
   $pg_group             = 'postgres',
   $pg_user              = 'postgres',
   $pg_hba_allow_network = '192.168.1.0/24',
-  $pg_setup_hot_sync    = false,
+  $pg_setup_hot_sync    = false,                    # not yet finished remote hotsync
+  $pg_backup_dir        = '/opt/backup/pg/backups',
   $pg_dbs               = [
     {
       db_name => $::elexis::params::db_main,
@@ -244,16 +242,17 @@ class elexis::postgresql_server(
       group   => $::postgresql::params::group,
     }
       
-    cron { 'pg-backup':
+    ensure_resource('cron', 'pg_dump',
+      merge( $dump_crontab_params, {
         ensure  => present,
-        command => "${pg_dump_script} >/var/log/pg-backup.log 2>&1",
+        command => "${ionice} ${pg_dump_script} >>/var/log/pg_dump.log 2>&1",
         user    => $pg_user,
-        hour    => 23,
-        minute  => 15,
         require => [
           File[$pg_dump_script, $pg_backup_dir],
-        ]
-    }
+        ],
+        }
+      )
+    )
 
     file {'/etc/cron.weekly/pg_load_test_script.rb':
       ensure  => present,
@@ -268,17 +267,6 @@ class elexis::postgresql_server(
     }
     
     file {'/etc/logrotate.d/pg_elexis_dump':  ensure => absent}
-    }
-
-    rsnapshot::crontab{'pg_server':
-      name         => 'pg_server',
-      excludes     => [],
-      includes     => [$pg_dump_dir],
-      destination  => $pg_backup_dir,
-      time_hourly  => $backup_hourly,
-      time_daily   => $backup_daily,
-      time_weekly  => $backup_weekly,
-      time_monthly => $backup_monthly,
     }
   }
 }
