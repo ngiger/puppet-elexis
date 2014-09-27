@@ -1,0 +1,14 @@
+---
+# encoding: utf-8
+# Copyright 2014 by Niklaus Giger <niklaus.giger@member.fsf.org>
+# I prefer to minimize the use of hieradata for unit tests
+# but for a a few cases this proved just to be impossible
+elexis::samba::samba_base: /opt/mustermann/samba
+samba::server::workgroup: 'Praxis Mustermann'
+samba::server::shares:
+  profile:
+    - 'comment = Benutzerprofile'
+    - 'path = /home/samba/profile'
+    - 'writable = true'
+    - 'browsable = false'
+

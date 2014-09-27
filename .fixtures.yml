@@ -13,9 +13,10 @@ fixtures:
       postgresql: "puppetlabs/postgresql"
       vcsrepo: "puppetlabs/vcsrepo"
       git: "puppetlabs/git"
+      samba: "thias/samba"
       ssh: 'erwbgy/ssh'
   repositories:
     rsnapshot: "git://github.com/ngiger/puppet-rsnapshot.git"
-    samba:     "git://github.com/ngiger/puppet-samba.git"
+#    mysql: "https://github.com/puppetlabs/puppetlabs-mysql.git"
   symlinks:
     elexis: "#{source_dir}"

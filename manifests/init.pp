@@ -34,4 +34,5 @@ class elexis (
   $elexis_main         = $::elexis::params::elexis_main,
 ) inherits elexis::params {
   notice("class elexis db ${db_type}")
+  $tst = hiera('foo_message', 'foo_message') 
 }

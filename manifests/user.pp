@@ -54,8 +54,9 @@ define elexis::user(
   $shell  = '/bin/sh',
 ) {
   ensure_packages(['ruby-shadow']) # needed for managing password
-  $splitted = split($::homes, ',')
-  if ("/home/${username}" in $splitted)  {
+#  $splitted = split($::homes, ',')
+#  if ("/home/${username}" in $splitted)  {
+  if (false) {
     user{$username:
       ensure     => $ensure,
       name       => $username,

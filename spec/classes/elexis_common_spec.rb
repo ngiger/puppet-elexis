@@ -22,5 +22,12 @@ describe 'elexis::common' do
     it { should compile }
     it { should compile.with_all_deps }
     it { should have_resource_count(NrResourcesInElexisCommon) }
+    it { should contain_apt__params }
+    it { should contain_elexis__common }
+    it { should contain_elexis__params }
+    it { should contain_file('/opt/downloads').with_ensure('directory') }
+    it { should contain_file('/etc/sudoers.d/elexis') }
+    it { should contain_user('elexis') }
+    it { should contain_group('elexis') }
   end
 end

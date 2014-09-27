@@ -17,9 +17,20 @@
 require 'spec_helper'
 
 describe 'elexis::client' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy'}}
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
+    it { should contain_elexis__client }
+    it { should contain_elexis__params }
+    it { should contain_mysql__client }
+    it { should contain_mysql__client__install }
+    it { should contain_mysql__params }
+    it { should contain_exec('update-java-alternatives') }
+    it { should contain_java }
+    it { should contain_java__config }
+    it { should contain_java__params }
+    it { should contain_package('java') }
+    it { should contain_package('mysql_client') }
   end
 end

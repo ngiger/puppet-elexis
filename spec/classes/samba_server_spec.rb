@@ -15,22 +15,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require 'spec_helper'
+RSpec.configure do |c|
+  c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'  
+end
 
-describe 'elexis::admin' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
-  context 'when running with default parameters' do
+describe 'samba::server' do
+  let(:facts) { WheezyFacts }
+
+    context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    it { should have_resource_count(NrResourcesInElexisCommon) }
-    it { should contain_elexis__admin }
-    it { should contain_elexis__common }
-    it { should contain_elexis__params }
-    it { should contain_apt__hold('puppet-common') }
-    it { should contain_apt__hold('puppet') }
-    it { should contain_apt__params }
-    it { should contain_file('/etc/sudoers.d/elexis') }
-    it { should contain_file('/opt/downloads').with_ensure('directory') }
-    it { should contain_group('elexis') }
-    it { should contain_user('elexis') }
+  end
+
+  context 'when running with parameters from mustermann' do
+    let(:params) {{ }}
+    let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
+    it { should compile }
+    it { should compile.with_all_deps }
+    it { should contain_samba__server }
+    it { should contain_samba__params }
+    it { should contain_package('samba') }
+    it { should contain_service('samba') }
+    it { should contain_file('/etc/samba/smb.conf').with_content(/Praxis Mustermann/) }
+    it { should contain_file('/etc/samba/smb.conf').with_content(
+      /\n\[profile\]\n\tcomment = Benutzerprofile\n\tpath = \/home\/samba\/profile\n\twritable = true\n\tbrowsable = false\n/) }
   end
 end

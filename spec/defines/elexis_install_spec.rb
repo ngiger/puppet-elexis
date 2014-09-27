@@ -17,7 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::install' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:facts) { WheezyFacts }
   context 'when running under Debian with defaults' do
     let(:title) { 'Elexis-3-OpenSource' }
 #    it { should compile }

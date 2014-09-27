@@ -28,6 +28,12 @@ describe 'elexis::awesome' do
             :ensure                  => true,
               }}
     it { should contain_package('awesome') }
+    it { should contain_elexis__params }
+    it { should contain_elexis__awesome }
+    it { should contain_package('awesome') }
+    it { should contain_package('xserver-xorg') }
+    it { should contain_package('slim') }
+    it { should contain_service('slim') }
   end
 end
 

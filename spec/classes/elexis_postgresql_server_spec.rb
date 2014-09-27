@@ -23,7 +23,7 @@ PgCronPatterns = [
  /\n45 23  1 \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.pg_server.conf monthly\s+>> \/var\/log\/rsnapshot\/pg_server.monthly.log\n/,
 ]
 describe 'elexis::postgresql_server' do
-  let(:facts) {{ :osfamily => 'Debian', :operatingsystemrelease => 'wheezy', :lsbdistid => 'debian', :concat_basedir => '/opt/concat' }}
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
     it { should have_resource_count(NrResourcesInElexisCommon) }
@@ -33,11 +33,12 @@ describe 'elexis::postgresql_server' do
 end
 
 describe 'elexis::postgresql_server' do
-  let(:facts) {{ :osfamily => 'Debian', :operatingsystemrelease => 'wheezy', :lsbdistid => 'debian', :concat_basedir => '/opt/concat' }}
+  let(:facts) { WheezyFacts }
   let(:params) { {
             :ensure     => 'true',
                     }}
   context 'when running under Debian with ensure' do
+    let(:facts) { WheezyFacts }
 
     mustHavesForDumps = [ /logAction/,
                           /ENV\['PGPASSWORD'\] = 'elexisTest'/,
@@ -82,7 +83,7 @@ describe 'elexis::postgresql_server' do
 end
 
 describe 'elexis::postgresql_server' do
-  let(:facts) {{ :osfamily => 'Debian', :operatingsystemrelease => 'wheezy', :lsbdistid => 'debian', :concat_basedir => '/opt/concat' }}
+  let(:facts) { WheezyFacts }
   let(:params) { {
             :ensure               => 'true',
             :pg_main_db_name      =>'db_main',

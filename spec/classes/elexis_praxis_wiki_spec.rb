@@ -31,7 +31,8 @@ describe 'elexis::praxis_wiki' do
     it { should contain_package('RedCloth') }
     it { should contain_package('libxml2-dev') }    
     it { should contain_service('praxis_wiki') }    
-    it { should contain_exec('/var/lib/service/praxis_wiki/run') }    
     it { should contain_file('/usr/local/bin/start_praxis_wiki.sh') }    
+    it { should contain_file('/usr/local/bin/start_praxis_wiki.sh') }    
+    it { should contain_vcsrepo('/opt/src/elexis-admin.wiki') }
   end
 end

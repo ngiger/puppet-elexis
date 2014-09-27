@@ -15,5 +15,8 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.5.0" STRICT_VARIABLES="yes"
   - rvm: 2.1.2
     env: PUPPET_GEM_VERSION="~> 3.5.0" STRICT_VARIABLES="yes"
+  # mysql has failure because of undefined variable mysql::params::kate
+  allow_failures:
+    - env: PUPPET_GEM_VERSION="~> 3.5.0" STRICT_VARIABLES="yes"
 notifications:
-  email: false
+  email: niklaus.giger@member.fsf.org

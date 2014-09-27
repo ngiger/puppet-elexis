@@ -75,6 +75,7 @@ class elexis::mysql_server(
   },
 },
 ) inherits elexis::params {
+  include elexis::admin
   ensure_resource('user', 'mysql', { ensure => present})
   $mysql_dump_script       = '/usr/local/bin/mysql_dump_elexis.rb'
   $mysql_load_main_script  = '/usr/local/bin/mysql_load_main_db.rb'

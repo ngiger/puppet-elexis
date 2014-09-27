@@ -3,6 +3,7 @@ require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'puppetlabs_spec_helper/puppetlabs_spec_helper'
 require 'puppet-syntax/tasks/puppet-syntax'
+require 'hiera'
 
 # PuppetLint.configuration.fail_on_warnings
 PuppetLint.configuration.send('disable_80chars')

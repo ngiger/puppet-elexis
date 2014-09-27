@@ -15,13 +15,14 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require 'spec_helper'
-
+require 'hiera'
 describe 'elexis' do
   context 'when running alone' do
-
     it { should compile }
     it { should have_resource_count(0) }
-  
+    it { should contain_elexis }
+    it { should contain_elexis__params }
   end
 
 end
+

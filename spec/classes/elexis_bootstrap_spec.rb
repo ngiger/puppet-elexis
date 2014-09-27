@@ -17,7 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::bootstrap' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
@@ -31,8 +31,20 @@ describe 'elexis::bootstrap' do
   let(:params) { {:ensure => true,}}
     it { should compile }
     it { should compile.with_all_deps }
-    it { should contain_package('eclipse-rcp') }
+    it { should contain_apt__params }
+    it { should contain_elexis__bootstrap }
+    it { should contain_elexis__common }
+    it { should contain_elexis__params }
     it { should contain_exec('bootstrap-elexis-3') }
+    it { should contain_exec('update-java-alternatives') }
+    it { should contain_java }
+    it { should contain_java__config }
+    it { should contain_java__params }
+    it { should contain_package('eclipse-rcp') }
+    it { should contain_package('java') }
+    it { should contain_package('mysql-utilities') }
+    it { should contain_package('mysql-workbench') }
+    it { should contain_package('ruby') }
     it { should contain_vcsrepo('/opt/bootstrap-elexis-3') }
   end
 end

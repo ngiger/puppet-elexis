@@ -17,6 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::latex' do
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
@@ -27,10 +28,17 @@ describe 'elexis::latex' do
   let(:params) { {:ensure => true,}}
     it { should compile }
     it { should compile.with_all_deps }
+    it { should contain_elexis__latex }
+    it { should contain_wget }
+    it { should contain_package('unzip') }
+    it { should contain_package('texinfo') }
     it { should contain_package('texlive') }
+    it { should contain_package('texlive-lang-german') }
+    it { should contain_package('texlive-latex-extra') }
     it { should contain_file('/opt/downloads/install_floatflt.sh') }
     it { should contain_exec('/usr/share/texmf/tex/latex/misc') }
     it { should contain_exec('install_floatflt.sty').with_command('/opt/downloads/install_floatflt.sh') }
+    it { should contain_wget__fetch('http://mirror.ctan.org/macros/latex/contrib/floatflt.zip') }
     
   end
 end

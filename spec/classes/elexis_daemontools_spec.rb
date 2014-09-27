@@ -24,5 +24,6 @@ describe 'elexis::daemontools' do
     it { should contain_package('daemontools-run') }
     it { should contain_file('/var/lib/service').with_ensure('directory') }
     it { should contain_file('/usr/local/bin/create_service.rb') }
+    it { should contain_elexis__daemontools }
   end
 end

@@ -15,55 +15,44 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require 'spec_helper'
-
-describe 'elexis::samba' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+describe 'elexis::samba', :type => :class  do
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
+
   end
   context 'when running with default parameters' do
-    let(:params) { {:ensure => 'present', }}
+    let(:params) { {:ensure => 'present', :pdf_ausgabe  => true }}
     it { should compile }
     it { should compile.with_all_deps }
     it { should contain_package('cups-pdf').with_ensure('present') }
     it { should contain_package('cups-bsd').with_ensure('present') }
-    it { should contain_package('augeas-tools').with_ensure('present') }
+    it { should contain_package('samba').with_ensure('installed') }
     it { should contain_file('/usr/local/bin/cups-pdf-renamer') }
     it { should contain_file('/opt/samba/elexis/neu').with_ensure('directory') }
-    it { should contain_file('/etc/samba/smb.conf') }
+    it { should contain_file('/etc/samba/smb.conf').with_content(/\n\[pdf-ausgabe\]\n/) }
+    it { should contain_file('/opt/samba/elexis').with_ensure('directory') }
+    it { should contain_file('/etc/cups/cups-pdf.conf') }
     it { should contain_exec('/etc/samba/smb.conf.tested') }
     it { should contain_service('samba') }
+    it { should contain_elexis__common }
+    it { should contain_elexis__params }
+    it { should contain_elexis__samba }
   end
-  
+
   context 'when running with parameters from mustermann' do
-    let(:params) { {:ensure => 'present', }}
-    let :samba do
-      {
-        :server     =>  { :interfaces => 'eth0' },
-      }
-    end
+    let(:params) { {:ensure => 'present',  :pdf_ausgabe  => true, :with_x2go => true }}
+    let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
     it { should compile }
     it { should compile.with_all_deps }
-xxx = %(  
-samba::server::interfaces: eth0
-samba::server::workgroup: 'Praxis Elexis'
-samba::server::server_string: '%h'
-
-samba::server::security: 'user'
-
-samba::server::passwd_chat: '*Enter\snew\sUNIX\spassword:* %n\n *Retype\snew\sUNIX\spassword:* %n\n .'
-samba::server::passwd_program: '/usr/bin/passwd %u'
-samba::server::pdc: true
-samba::server::shares:
-  -
-    name: profile
-    comment: Benutzerprofile
-    path: /home/samba/profile
-    read_only: false
-    force_create mode: 0600
-    force_directory mode: '0700'
-    browsable: false
-)
+    it { should contain_file('/opt/mustermann/samba').with_ensure('directory') }
+    it { should contain_file('/etc/samba/smb.conf').with_content(/\n\[pdf-ausgabe\]\n/) }
+    it { should contain_file('/etc/samba/smb.conf').with_content(/Praxis Mustermann/) }
+    it { should contain_file('/etc/samba/smb.conf').with_content(/Praxis Mustermann/) }
+    it { should contain_exec('wget-http://code.x2go.org/releases/X2GoClient_latest_macosx.dmg') }
+    it { should contain_exec('wget-http://code.x2go.org/releases/X2GoClient_latest_mswin32-setup.exe') }
+    it { should contain_wget__fetch('http://code.x2go.org/releases/X2GoClient_latest_macosx.dmg') }
+    it { should contain_wget__fetch('http://code.x2go.org/releases/X2GoClient_latest_mswin32-setup.exe') }
   end
 end

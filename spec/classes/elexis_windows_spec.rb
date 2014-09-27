@@ -17,7 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::windows' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
@@ -27,7 +27,7 @@ describe 'elexis::windows' do
 end
 
 describe 'elexis::windows' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     let(:params) { {:ensure => 'true',}}
 #    it { should compile }

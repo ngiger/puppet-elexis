@@ -4,9 +4,9 @@ class elexis::latex (
   $ensure   = false,
   $dest_dir = '/usr/share/texmf/tex/latex/misc',
   $dest_zip = '/var/cache/floatflt.zip',
-  $float_sty_name = "$dest_dir/floatflt.sty",
   $floatflt_url = 'http://mirror.ctan.org/macros/latex/contrib/floatflt.zip',
 ) inherits elexis::params {
+  $float_sty_name = "$dest_dir/floatflt.sty"
   if ($ensure != false) {
   if !defined(Package['unzip']) { package {'unzip': ensure => present, } }
   package {['texlive', 'texinfo', 'texlive-lang-german', 'texlive-latex-extra']:

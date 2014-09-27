@@ -23,9 +23,10 @@ MySQLCrontabPattern = [
     /\n45 23  1 \* \*  root ionice -c3 \/usr\/bin\/rsnapshot -c \/etc\/rsnapshot.mysql_server.conf monthly/,
 ]
 describe 'elexis::mysql_server' do
+  let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
-    it { should have_resource_count(1) }
+    it { should have_resource_count(1 + NrResourcesInElexisCommon) }
     it { should contain_user('mysql').with_ensure('present') }
     it { should_not contain_service('mysql-server').with_ensure('present') }
     it { should_not contain_package('mysql-client').with_ensure('present') }
@@ -35,7 +36,7 @@ end
 describe 'elexis::mysql_server' do
   let(:node) { 'testhost.example.com' }
   let(:title) { 'demo' }
-    let(:facts) {{ :osfamily => 'Debian' }}
+  let(:facts) { WheezyFacts }
     let(:params) { {
             :ensure     => 'true',
                     }}
@@ -75,7 +76,7 @@ end
 describe 'elexis::mysql_server' do
   let(:node) { 'testhost.example.com' }
   let(:title) { 'demo' }
-    let(:facts) {{ :osfamily => 'Debian' }}
+  let(:facts) { WheezyFacts }
     let(:params) { {
             :ensure                  => 'true',
             :mysql_main_db_name      =>'db_main',

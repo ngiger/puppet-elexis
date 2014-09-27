@@ -1,0 +1,13 @@
+--- 
+xsamba::server::interfaces: [ eth1, lo ]
+xsamba::server::workgroup: 'Praxis Testing'
+xxsamba::server::server_string: '%h'
+xsamba::server::security: 'user'
+xsamba::server::passwd_chat: '*Enter\snew\sUNIX\spassword:* %n\n *Retype\snew\sUNIX\spassword:* %n\n .'
+xsamba::server::passwd_program: '/usr/bin/passwd %u'
+xsamba::server::shares:
+  profile:
+    - 'comment = Benutzerprofile'
+    - 'path = /home/samba/profile'
+    - 'writable = true'
+    - 'browsable = false'
