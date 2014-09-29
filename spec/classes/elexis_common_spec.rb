@@ -25,8 +25,8 @@ describe 'elexis::common' do
     it { should contain_apt__params }
     it { should contain_elexis__common }
     it { should contain_elexis__params }
-    it { should contain_file('/opt/downloads').with_ensure('directory') }
-    it { should contain_file('/etc/sudoers.d/elexis') }
+    it { should contain_file('/opt/downloads').with_ensure('directory').with_owner('elexis').with_group('elexis') }
+    it { should contain_file('/etc/sudoers.d/elexis').with_owner('root').with_mode('0440') }
     it { should contain_user('elexis') }
     it { should contain_group('elexis') }
   end

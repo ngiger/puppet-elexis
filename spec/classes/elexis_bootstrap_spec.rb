@@ -45,7 +45,8 @@ describe 'elexis::bootstrap' do
     it { should contain_package('mysql-utilities') }
     it { should contain_package('mysql-workbench') }
     it { should contain_package('ruby') }
-    it { should contain_vcsrepo('/opt/bootstrap-elexis-3') }
+    it { should contain_vcsrepo('/opt/bootstrap-elexis-3').with_user('elexis') }
+    it { should contain_vcsrepo('/opt/bootstrap-elexis-3').with_group('elexis') }
   end
 end
 

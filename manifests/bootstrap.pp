@@ -21,7 +21,10 @@ class elexis::bootstrap(
     vcsrepo{$install_dir:
       ensure   => present,
       provider => git,
-      source   => 'https://github.com/ngiger/bootstrap-elexis-3.git'
+      source  => 'https://github.com/ngiger/bootstrap-elexis-3.git',
+      require => User[$::elexis::params::main_user],
+      user    => $::elexis::params::main_user,
+      group   => $::elexis::params::main_user,
     }
     exec{'bootstrap-elexis-3':
       require => [

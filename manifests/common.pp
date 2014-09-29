@@ -12,7 +12,10 @@ class elexis::common() inherits elexis::params {
   $main_name   = $elexis_main[name]
   $main_gid    = $elexis_main[gid]
   file { $::elexis::params::download_dir:
-    ensure => directory, # so make this a directory
+    ensure  => directory, # so make this a directory
+    require => User[$::elexis::params::main_user],
+    owner   => $::elexis::params::main_user,
+    group   => $::elexis::params::main_user,
   }
   group{$main_name:
     ensure => present,
