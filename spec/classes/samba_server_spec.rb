@@ -22,7 +22,7 @@ end
 describe 'samba::server' do
   let(:facts) { WheezyFacts }
 
-    context 'when running with default parameters' do
+  context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
   end
