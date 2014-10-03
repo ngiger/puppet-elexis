@@ -19,19 +19,18 @@ require 'spec_helper'
 describe 'elexis::praxis_wiki' do
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
-    it { should contain_package('gollum') }
-    it { should contain_package('wikicloth') }
-    it { should contain_package('RedCloth') }
-    it { should contain_package('libxml2-dev') }    
+    it { should_not contain_package('gollum') }
+    it { should_not contain_package('wikicloth') }
+    it { should_not contain_package('RedCloth') }
+    it { should_not contain_package('libxml2-dev') }    
   end
-  context 'when running with default parameters' do
-    let(:params) { {:ensure                  => 'present', }}
+  context 'when running with ensure true' do
+    let(:params) { {:ensure => 'true', }}
     it { should contain_package('gollum') }
     it { should contain_package('wikicloth') }
     it { should contain_package('RedCloth') }
     it { should contain_package('libxml2-dev') }    
     it { should contain_service('praxis_wiki') }    
-    it { should contain_file('/usr/local/bin/start_praxis_wiki.sh') }    
     it { should contain_file('/usr/local/bin/start_praxis_wiki.sh') }    
     it { should contain_vcsrepo('/opt/src/elexis-admin.wiki') }
   end

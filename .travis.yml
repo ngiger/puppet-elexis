@@ -1,5 +1,6 @@
 ---
 language: ruby
+cache: bundler
 bundler_args: --without development
 #  bundle exec rake lint # crashes with an UTF-8 error. therefore excluding it
 # same for bundle exec rake validate &&

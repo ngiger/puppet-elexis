@@ -1,12 +1,6 @@
 # kate: replace-tabs on; indent-width 2; indent-mode cstyle; syntax ruby
 # encoding: utf-8
 #
-# A utility class to easily add users for Elexis
-# The definitions are found under elexis::params
-#
-class elexis::users() inherits elexis::common {
-  elexis_add_users{$::elexis::params::user_definition: }
-}
 # Add all elexis users
 # as defined from $::elexis::params::user_definition
 
@@ -37,4 +31,10 @@ define elexis_add_users(
       require  => User[$::elexis::params::main_user], # elexis must be created first!
     }
   }
+}
+# A utility class to easily add users for Elexis
+# The definitions are found under elexis::params
+#
+class elexis::users() inherits elexis::common {
+  elexis_add_users{$::elexis::params::user_definition: }
 }

@@ -31,4 +31,4 @@ RSpec.configure do |c|
   c.config = '/doesnotexist'
 end
 
-at_exit { RSpec::Puppet::Coverage.report! }
+#at_exit { RSpec::Puppet::Coverage.report! }
