@@ -4,6 +4,7 @@
 # I prefer to minimize the use of hieradata for unit tests
 # but it is also important to test it sometimes with hieradata (eg. elexis_samba_spec.rb, samba_server_spec.rb)
 elexis::samba::samba_base: /opt/mustermann/samba
+samba::server::workgroup: 'Praxis Mustermann'
 samba::server::shares:
   profile:
     - 'comment = Benutzerprofile'
