@@ -1,7 +1,7 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 NrResourcesInElexisCommon = 10
-WheezyFacts = { :osfamily => 'Debian', 
+WheezyFacts = { :osfamily => 'Debian',
                 :operatingsystem => 'Debian',
                 :operatingsystemrelease => 'wheezy',
                 :lsbdistcodename => 'wheezy',
@@ -15,7 +15,7 @@ WheezyFacts = { :osfamily => 'Debian',
                 :https_proxy => nil,
                 :kernel => 'Linux',
                 # for java
-                :architecture => 'amd64',            
+                :architecture => 'amd64',
                  # for concat/manifests/init.pp:193
                 :id => 'id',
                 :concat_basedir => '/opt/concat',

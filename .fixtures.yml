@@ -15,6 +15,7 @@ fixtures:
       git: "puppetlabs/git"
       samba: "thias/samba"
       ssh: 'erwbgy/ssh'
+      fooacl: 'thias/fooacl'
   repositories:
     rsnapshot: "git://github.com/ngiger/puppet-rsnapshot.git"
 #    mysql: "https://github.com/puppetlabs/puppetlabs-mysql.git"
