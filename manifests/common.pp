@@ -10,12 +10,13 @@
 class elexis::common() inherits elexis::params {
   $elexis_main = $::elexis::params::elexis_main
   $main_name   = $elexis_main[name]
+  $main_uid    = $elexis_main[uid]
   $main_gid    = $elexis_main[gid]
   file { $::elexis::params::download_dir:
     ensure  => directory, # so make this a directory
-    require => User[$::elexis::params::main_user],
-    owner   => $::elexis::params::main_user,
-    group   => $::elexis::params::main_user,
+    require => User[$main_name],
+    owner   => $main_name,
+    group   => $main_gid,
   }
   group{$main_name:
     ensure => present,
@@ -23,12 +24,13 @@ class elexis::common() inherits elexis::params {
   }
 
   if !defined(User[$main_name]) {
-    user{$main_name:
+    user{"$main_name":
       ensure => present,
-      uid    => $elexis_main[uid],
-      gid    => $main_gid,
-      shell  => $elexis_main[shell],
-      groups => $elexis_main[groups],
+      uid    => "$main_uid",
+      gid    => "$main_gid",
+      shell  =>  $elexis_main[shell],
+      groups =>  $elexis_main[groups],
+      comment =>  $elexis_main[comment],
     }
   }
 

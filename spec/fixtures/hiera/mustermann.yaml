@@ -2,9 +2,8 @@
 # encoding: utf-8
 # Copyright 2014 by Niklaus Giger <niklaus.giger@member.fsf.org>
 # I prefer to minimize the use of hieradata for unit tests
-# but for a a few cases this proved just to be impossible
+# but it is also important to test it sometimes with hieradata (eg. elexis_samba_spec.rb, samba_server_spec.rb)
 elexis::samba::samba_base: /opt/mustermann/samba
-samba::server::workgroup: 'Praxis Mustermann'
 samba::server::shares:
   profile:
     - 'comment = Benutzerprofile'
@@ -12,3 +11,17 @@ samba::server::shares:
     - 'writable = true'
     - 'browsable = false'
 
+elexis::samba::pdf_ausgabe: true
+elexis::samba::ensure: true
+
+elexis::params::elexis_main:
+    name:  not_elexis
+    mandant:  true
+    ensure: present
+    uid: 4443
+    gid: 4445
+    group:   another_group
+    groups:  [ group1, group2 ]
+    comment: "Comment from fixture Mustermann"
+    managehome: true
+    shell: "/usr/bin/fish"

@@ -15,6 +15,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require 'spec_helper'
+
 describe 'elexis::samba', :type => :class  do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
@@ -54,5 +55,13 @@ describe 'elexis::samba', :type => :class  do
     it { should contain_exec('wget-http://code.x2go.org/releases/X2GoClient_latest_mswin32-setup.exe') }
     it { should contain_wget__fetch('http://code.x2go.org/releases/X2GoClient_latest_macosx.dmg') }
     it { should contain_wget__fetch('http://code.x2go.org/releases/X2GoClient_latest_mswin32-setup.exe') }
+    it { should contain_group('not_elexis').with('gid' => '4445',) }
+    it { should contain_user('not_elexis').with('ensure' => 'present',
+                                                'uid' => '4443',
+                                                'gid' => '4445',
+                                                'shell' => "/usr/bin/fish",
+                                                'groups' => [ 'group1', 'group2'],
+                                                'comment' => "Comment from fixture Mustermann",
+                                               ) }
   end
 end

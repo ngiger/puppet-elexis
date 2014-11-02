@@ -18,6 +18,7 @@ require 'spec_helper'
 
 describe 'elexis::admin' do
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:hiera_config) { }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }

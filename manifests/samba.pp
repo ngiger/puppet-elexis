@@ -15,13 +15,15 @@ class elexis::samba (
   $with_x2go            = false,
   $x2go_win_version     = '4.0.0.3',
   $x2go_mac_version     = '4.0.1.0',
-) inherits elexis::common {
+)  {
+  include elexis::common
   if ($ensure != absent) {
     if ($pdf_ausgabe == false) {
       class {'samba::server': }
     } else {
+  notify { 'test: elexis::samba with pdf_ausgabe': }
       $params = hiera('samba::server::shares', {})
-      $share_pdf = { 'pdf-ausgabe' => 
+      $share_pdf = { 'pdf-ausgabe' =>
         [
           "comment        = 'Ausgabe für Drucken in Datei via PDF'",
           'browsable      = true',
@@ -36,7 +38,7 @@ class elexis::samba (
       $merged_hash = merge($params, $share_pdf)
       class {'samba::server': shares => $merged_hash }
 
-      ensure_packages(['cups-pdf', 'cups-bsd'])  
+      ensure_packages(['cups-pdf', 'cups-bsd'])
       file{'/etc/cups/cups-pdf.conf':
       content => '# managed by puppet! elexis/manifests/samba.pp
 Out ${HOME}/pdf
@@ -78,12 +80,12 @@ sudo -u \$2 mv \$1 ${samba_pdf}/\$FILENAME && logger cups-pdf moved \$1 to ${sam
 
     file{[$samba_base, $samba_praxis, $samba_pdf]:
       ensure  => directory,
-      group   => 'elexis',
-      owner   => 'elexis',
-      require => User['elexis'],
+      group   => $::elexis::params::elexis_main[main],
+      owner   => $::elexis::params::elexis_main[main],
+#      require => User['elexis'],
       mode    => '0664',
     }
-    
+
     if ($with_x2go) {
       $wget_x2go_win_client = "${samba_base}/X2GoClient_latest_mswin32-setup.exe"
       $wget_x2go_mac_client = "${samba_base}/X2GoClient_latest_macosx.dmg"
@@ -92,7 +94,7 @@ sudo -u \$2 mv \$1 ${samba_pdf}/\$FILENAME && logger cups-pdf moved \$1 to ${sam
         timeout => 1800, # allow maximal 30 minutes for download
         destination => $wget_x2go_win_client,
       }
-      
+
       wget::fetch{'http://code.x2go.org/releases/X2GoClient_latest_macosx.dmg':
         require => [File[$samba_base]],
         timeout => 1800, # allow maximal 30 minutes for download

@@ -18,6 +18,7 @@ require 'spec_helper'
 
 describe 'elexis::common' do
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:hiera_config) { }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
@@ -25,7 +26,7 @@ describe 'elexis::common' do
     it { should contain_apt__params }
     it { should contain_elexis__common }
     it { should contain_elexis__params }
-    it { should contain_file('/opt/downloads').with_ensure('directory').with_owner('elexis').with_group('elexis') }
+    it { should contain_file('/opt/downloads').with_ensure('directory').with_owner('elexis').with_group('1300') }
     it { should contain_file('/etc/sudoers.d/elexis').with_mode('0440') }
     it { should contain_user('elexis') }
     it { should contain_group('elexis') }

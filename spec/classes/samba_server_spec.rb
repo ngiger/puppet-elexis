@@ -16,7 +16,7 @@
 #
 require 'spec_helper'
 RSpec.configure do |c|
-  c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'  
+  c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
 end
 
 describe 'samba::server' do
@@ -35,6 +35,9 @@ describe 'samba::server' do
     it { should contain_samba__server }
     it { should contain_samba__params }
     it { should contain_package('samba') }
+#    it { should contain_group('not_elexis').with( 'gid' => '4445') }
+#    it { should contain_user('not_elexis').with(        'ensure' => 'present',      ) }
+
     it { should contain_service('samba') }
     it { should contain_file('/etc/samba/smb.conf').with_content(/Praxis Mustermann/) }
     it { should contain_file('/etc/samba/smb.conf').with_content(

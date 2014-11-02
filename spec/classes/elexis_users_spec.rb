@@ -18,14 +18,15 @@ require 'spec_helper'
 
 describe 'elexis::users' do
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
+  let(:hiera_config) { }
   context 'when running under Debian with defaults' do
     let(:title) { 'defaults' }
     it { should contain_group('elexis').only_with(
                                                 'gid'    => '1300',
                                                 'ensure' => 'present',
-                                                'name'   => 'elexis', 
+                                                'name'   => 'elexis',
                                                ) }
-    it { should contain_user('elexis').only_with(
+    it { should contain_user('elexis').with(
     'name' => 'elexis',
     'ensure' => 'present',
     'uid'    => '1300',

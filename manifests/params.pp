@@ -13,30 +13,30 @@
 #
 
 
-class elexis::params {
-  $ensure                 = false
-  $enfore_puppet_version  = '3.6.*'           # Upgrading to 3.7. will break many things, i suspect
-  $db_type                = 'mysql'           # mysql or pg for postgresql
-  $main_user              = 'elexis'          # OS-Usersname for backups, etc
-  $db_user                = 'elexis'          # main db user (all privileges for elexis databases)
-  $db_main                = 'elexis'          # Name of DB to use for production
-  $db_test                = 'test'            # Name of test DB to use for production
-  $db_password            = 'elexisTest'      # password of main DB user
-  $db_pw_hash             = ''                # or better and used if present password hash of main DB user
-  $java                   = 'openjdk-7-jdk'
-  $bin_dir                = '/usr/local/bin'  # where we will put our binary helper scripts
-  $service_path           = '/var/lib/service'
-  $jenkins_root           = '/opt/jenkins'
-  $download_dir           = '/opt/downloads'
-  $download_url           = 'http://ftp.medelexis.ch/downloads_opensource'
-  $jenkins_downloads      = '/opt/jenkins/downloads'
-  $jenkins_jobs_dir       = '/opt/jenkins/jobs'
-  $elexis_base_url        = 'http://hg.sourceforge.net/hgweb/elexis'
-  $create_service_script  = "${::elexis::params::bin_dir}/create_service.rb"
-  $dest_zip               = "${::elexis::params::download_dir}/floatflt.zip"
-  $elexis_file_server     = 'http://ftp.medelexis.ch/downloads_opensource'
-  $samba_base             = '/home/samba'
-  $main_allow_sudo_all    = true
+class elexis::params (
+  $ensure                 = false,
+  $enfore_puppet_version  = '3.6.*',           # Upgrading to 3.7. will break many things, i suspect
+  $db_type                = 'mysql',           # mysql or pg for postgresql
+  $main_user              = 'elexis',          # OS-Usersname for backups, etc
+  $db_user                = 'elexis',          # main db user (all privileges for elexis databases)
+  $db_main                = 'elexis',          # Name of DB to use for production
+  $db_test                = 'test',            # Name of test DB to use for production
+  $db_password            = 'elexisTest',      # password of main DB user
+  $db_pw_hash             = '',                # or better and used if present password hash of main DB user
+  $java                   = 'openjdk-7-jdk',
+  $bin_dir                = '/usr/local/bin',  # where we will put our binary helper scripts
+  $service_path           = '/var/lib/service',
+  $jenkins_root           = '/opt/jenkins',
+  $download_dir           = '/opt/downloads',
+  $download_url           = 'http://ftp.medelexis.ch/downloads_opensource',
+  $jenkins_downloads      = '/opt/jenkins/downloads',
+  $jenkins_jobs_dir       = '/opt/jenkins/jobs',
+  $elexis_base_url        = 'http://hg.sourceforge.net/hgweb/elexis',
+  $create_service_script  = "${::elexis::params::bin_dir}/create_service.rb",
+  $dest_zip               = "${::elexis::params::download_dir}/floatflt.zip",
+  $elexis_file_server     = 'http://ftp.medelexis.ch/downloads_opensource',
+  $samba_base             = '/home/samba',
+  $main_allow_sudo_all    = true,
   $elexis_main            = {
                               name        => 'elexis',
                               mandant     => true,
@@ -49,7 +49,7 @@ class elexis::params {
                               managehome  => true,
                               password    => 'elexisTest', # if nil it will not be set
                               shell       => '/bin/bash',
-                            }
+                            },
   $user_definition        =  [ {  name        => 'arzt',
                                   mandant     => true,
                                   ensure      => 'present', # will remove /home/arzt! (possible values absent, present, role)
@@ -61,6 +61,8 @@ class elexis::params {
                                   password    => 'elexisTest', # if nil it will not be set
                                   shell       => '/bin/bash',
                                 }
-                              ]
-}
+                              ],
 
+)
+{
+}
