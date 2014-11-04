@@ -24,20 +24,20 @@ describe 'elexis::user' do
     let(:title) { 'demo' }
     let(:params) { {:username => 'a_user',
                     :uid => '999',
-                    :password => 'topsecret',
+                    :pw_clear => 'topsecret',
                     }}
-    
+
     it { should compile }
-    it { should have_resource_count(NrResourcesInElexisCommon) }
+    it { should have_resource_count(5) }
     it { should contain_elexis__user('demo') }
     it { should contain_file('Create_Home for a_user').with_path('/home/a_user').with_source( '/etc/skel').with_recurse('remote') }
     it { should contain_file('Create_Home for a_user').only_with(
                                                                  'source'  => '/etc/skel',
-                                                                 'path'    => '/home/a_user', 
+                                                                 'path'    => '/home/a_user',
                                                                  'recurse' => 'remote',
                                                                  'owner'   => '999',
                                                                  'group'   => '999',
-                                                                 )  
+                                                                 )
        }
   end
 end
