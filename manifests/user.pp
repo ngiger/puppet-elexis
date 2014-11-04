@@ -31,7 +31,7 @@ define ensure_key_value($file, $key, $value, $delimiter = ' ') {
 # set a password hash in /etc/shadow
 # Not used at the moment. We will probably use clear text passwords
 # from hiera
-define setpass($hash, $file='/etc/shadow') {
+define setpass_hash($hash, $file='/etc/shadow') {
   ensure_key_value{ "set_pass_${name}":
     file      => $file,
     key       => $name,
@@ -41,61 +41,39 @@ define setpass($hash, $file='/etc/shadow') {
     }
 }
 
-# Define an elexis user
-# from hiera
+define setpass_cleartext($cleartext) {
+  notify{"setpass_cleartext $title $cleartext": }
+  exec{"set_passwd_$title":
+    command => "/usr/bin/passwd $title <<EOF
+$cleartext
+$cleartext
+EOF
+",
+  }
+}
+
 define elexis::user(
   $username,
   $uid,
-  $gid     = $uid,
-  $groups  = [$username],
-  $comment  = '',
-  $password = '',
-  $ensure = present,
-  $shell  = '/bin/sh',
+  $ensure   = present,
+  $pw_clear = nil, # password as cleartext, if nil nothing will be done
+  $pw_hash  = nil, # password as hash, if nil nothing will be done
 ) {
-  ensure_packages(['ruby-shadow']) # needed for managing password
-#  $splitted = split($::homes, ',')
-#  if ("/home/${username}" in $splitted)  {
-  if (false) {
-    user{$username:
-      ensure     => $ensure,
-      name       => $username,
-      managehome => true,
-      groups     => $groups,
-      shell      => $shell,
-      uid        => $uid,
-      gid        => $gid,
-      require    => Group[$username],
+  if ($ensure != absent) {
+    if ($pw_clear != nil)   { setpass_cleartext { $username: cleartext => $pw_clear,  } }
+    elsif ($pw_hash != nil) { setpass_hash      { $username: hash      => $pw_hash,  } }
+    file{"Create_Home for ${username}":
+      source  => '/etc/skel',
+      recurse => remote,
+      path    => "/home/${username}",
+      owner   => $uid,
+      group   => $uid,
     }
-    ensure_resource('group', $username, {'ensure' => 'present', 'gid' => $gid })
   } else {
-    user{"${username}${gid}":
-      ensure  => $ensure,
-      name    => $username,
-      groups  => $groups,
-      comment => $comment, # Motzt bei nicht US-ASCII Kommentaren wir Müller, aber nur wenn er nichts zu tun hat
-      shell   => $shell,
-      uid     => $uid,
-      gid     => $gid,
-      # password         => $password,
-      # password_min_age => 0, # force user to change it soon
-    }
-    if ($ensure != 'absent' ) { setpass { $username: hash => $password,  } }
-  }
-  file{"Create_Home for ${username}":
-    source  => '/etc/skel',
-    recurse => remote,
-    path    => "/home/${username}",
-    owner   => $uid,
-    group   => $gid,
-  }
-  ensure_resource('group', 'backup',  {'ensure' => 'present' })
-
-  if ($ensure != 'absent') {
-    exec{"Adding backup for user ${username}":
-      command => "/usr/sbin/adduser backup ${username}",
-      require => [ Group['backup'], User[$username]],
-      unless  => "/bin/grep ${username}: /etc/group  | /bin/grep backup",
+    file{"/home/${username}":
+      ensure => absent,
+      force  => true,
+      recurse => true,
     }
   }
 }

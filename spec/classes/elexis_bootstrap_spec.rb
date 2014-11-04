@@ -23,9 +23,9 @@ describe 'elexis::bootstrap' do
     it { should compile }
     it { should compile.with_all_deps }
     it { should have_resource_count(NrResourcesInElexisCommon) }
-    it { should contain_user('elexis') }
-    it { should contain_group('elexis') }
-    it { should contain_file('/etc/sudoers.d/elexis') }
+    it { should contain_user('arzt') }
+    it { should contain_group('arzt') }
+    it { should contain_file('/etc/sudoers.d/arzt') }
     it { should contain_file('/opt/downloads') }
   end
   context 'when running under Debian with ensure' do
@@ -46,8 +46,8 @@ describe 'elexis::bootstrap' do
     it { should contain_package('mysql-utilities') }
     it { should contain_package('mysql-workbench') }
     it { should contain_package('ruby') }
-    it { should contain_vcsrepo('/opt/bootstrap-elexis-3').with_user('elexis') }
-    it { should contain_vcsrepo('/opt/bootstrap-elexis-3').with_group('elexis') }
+    it { should contain_vcsrepo('/opt/bootstrap-elexis-3').with_user('arzt') }
+    it { should contain_vcsrepo('/opt/bootstrap-elexis-3').with_group('arzt') }
   end
 end
 

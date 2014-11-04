@@ -1,6 +1,6 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
 
-NrResourcesInElexisCommon = 10
+NrResourcesInElexisCommon = 23
 WheezyFacts = { :osfamily => 'Debian',
                 :operatingsystem => 'Debian',
                 :operatingsystemrelease => 'wheezy',
@@ -31,4 +31,15 @@ RSpec.configure do |c|
   c.config = '/doesnotexist'
 end
 
-#at_exit { RSpec::Puppet::Coverage.report! }
+# TODO: Hope this bugs gets squashed wit a new version of rspec
+# needed if  bundle exec rspec spec/classes/ fails, but each spec/*.spec is okay when run alone
+# see https://github.com/rodjek/rspec-puppet/issues/215
+module RSpec::Puppet
+  module Support
+    def build_catalog(*args)
+      @@cache[args] = self.build_catalog_without_cache(*args)
+    end
+  end
+end
+
+at_exit { RSpec::Puppet::Coverage.report! }

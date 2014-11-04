@@ -15,20 +15,14 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require 'spec_helper'
-
-describe 'elexis::common' do
-  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
-  let(:hiera_config) { }
-  context 'when running with default parameters' do
+require 'hiera'
+describe 'elexis::main_user' do
+  context 'when running alone' do
     it { should compile }
-    it { should compile.with_all_deps }
-    it { should have_resource_count(NrResourcesInElexisCommon) }
-    it { should contain_apt__params }
-    it { should contain_elexis__common }
+    it { should have_resource_count(0) }
+    it { should contain_elexis__main_user }
     it { should contain_elexis__params }
-    it { should contain_file('/opt/downloads').with_ensure('directory').with_owner('arzt').with_group('arzt') }
-    it { should contain_file('/etc/sudoers.d/arzt').with_mode('0440') }
-    it { should contain_user('arzt') }
-    it { should contain_group('arzt') }
   end
+
 end
+

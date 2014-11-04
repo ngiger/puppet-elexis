@@ -5,36 +5,56 @@
 # as defined from $::elexis::params::user_definition
 
 define elexis_add_users(
+  $mandant = true,
+  $ensure  = true,
+  $uid     = 7777, # $gid will always be set to $uid
+  $groups  = [],
+  $comment = nil,
+  $managehome = false,
+  $shell      = '/bin/bash',
+  $pw_clear   = nil,
+  $pw_hash    = nil,
 ) {
-  include elexis::common
-  $username = $title['name']
-  $expire_log = "/var/log/expire_user_${username}"
-  $comment    = $title['comment']
-  $ensure   = $title['ensure']
-  $groups   = $title['groups']
-  $shell    = $title['shell']
-  $uid      = $title['uid']
-  $gid      = $title['gid']
-  
-  # comment Motzt bei nicht US-ASCII Kommentaren wir Müller, aber nur wenn
-  # der kommentar schon definiert wurde
-  if ($username != undef) {
-    elexis::user{$username:
+  group{$title: gid => $uid, ensure => present}
+  if ( "$title" == "$::elexis::params::elexis_main") {
+    user{ $title:
       ensure   => $ensure,
-      username => $username,
-      password => $title['password'],
+      password => $password,
       uid      => $uid,
-      gid      => $gid,
+      gid      => $uid,
       groups   => $groups,
       comment  => $comment,
       shell    => $shell,
-      require  => User[$::elexis::params::main_user], # elexis must be created first!
+      require  => Group[$groups],
+    }
+  } else {
+    user{ $title:
+      ensure   => $ensure,
+      password => $password,
+      uid      => $uid,
+      gid      => $uid,
+      groups   => $groups,
+      comment  => $comment,
+      shell    => $shell,
+      require  => [
+        Group[$groups],
+        User[$::elexis::params::elexis_main], # elexis_main must be created first!
+      ]
     }
   }
+  elexis::user{$title:
+    username  => $title,
+    uid       => $uid,
+    ensure    => $ensure,
+    pw_clear  => $pw_clear,
+    pw_hash   => $pw_hash
+  }
 }
-# A utility class to easily add users for Elexis
-# The definitions are found under elexis::params
-#
-class elexis::users() inherits elexis::common {
-  elexis_add_users{$::elexis::params::user_definition: }
+  # https://tobrunet.ch/2013/01/iterate-over-datastructures-in-puppet-manifests/
+class elexis::users() {
+  include elexis::common
+  include elexis::params
+  # notify{"Gen users from  $::elexis::params::user_definition":}
+  create_resources(elexis_add_users,  $::elexis::params::user_definition, {})
+  ensure_resource(group, $::elexis::params::add_groups)
 }

@@ -22,16 +22,40 @@ describe 'elexis::admin' do
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    it { should have_resource_count(NrResourcesInElexisCommon) }
+#    it { should have_resource_count(NrResourcesInElexisCommon) }
     it { should contain_elexis__admin }
     it { should contain_elexis__common }
     it { should contain_elexis__params }
     it { should contain_apt__hold('puppet-common') }
     it { should contain_apt__hold('puppet') }
     it { should contain_apt__params }
-    it { should contain_file('/etc/sudoers.d/elexis') }
+    it { should contain_file('/etc/sudoers.d/arzt') }
     it { should contain_file('/opt/downloads').with_ensure('directory') }
-    it { should contain_group('elexis') }
-    it { should contain_user('elexis') }
+    it { should contain_group('arzt') }
+    it { should contain_user('arzt') }
+  end
+end
+
+describe 'elexis::admin' do
+  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
+  let(:facts)  { { :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'} }
+    let(:params) { {
+            :ensure                  => 'true',
+            :pg_util_rb => '/test/bin/pg_util.rb',
+            :packages   => ['fish'],
+                    }}
+  context 'when running with changed parameters' do
+    it { should compile }
+    it { should compile.with_all_deps }
+    it { should contain_elexis__admin }
+    it { should contain_elexis__common }
+    it { should contain_elexis__params }
+    it { should contain_apt__hold('puppet-common') }
+    it { should contain_apt__hold('puppet') }
+    it { should contain_apt__params }
+    it { should contain_file('/etc/sudoers.d/mustermann').with_content(/mustermann ALL=NOPASSWD:ALL/) }
+    it { should contain_file('/opt/downloads').with_ensure('directory') }
+    it { should contain_group('mustermann') }
+    it { should contain_user('mustermann') }
   end
 end

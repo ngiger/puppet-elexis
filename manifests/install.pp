@@ -3,7 +3,7 @@
 # Installs the Elexis OpenSource Version into a $install_base/<version>
 # you can have more than one installation in parallel
 # A shortcut for the $title is placed under /usr/local/bin
-# 
+#
 
 define elexis::install (
   $exe_name               = 'Elexis3',
@@ -80,7 +80,7 @@ define elexis::install (
 ) {
   include ::wget
   include ::elexis::users
-  $main_user      = $::elexis::params::elexis_main['name']
+  $main_user      = $::elexis::params::elexis_main
   $install_dir    = "${install_base}/${version}"
   $full_exec_path = "${install_dir}/${exe_name}"
   $director_url   = 'http://mirror.switch.ch/eclipse/tools/buckminster/products/director_latest.zip'
@@ -95,7 +95,7 @@ define elexis::install (
     mode    => '0755',
     require => [ User[$main_user] ];
   }
-  
+
   ensure_resource('file', $install_dir, {
     ensure  => directory,
     owner   => $main_user,
@@ -135,14 +135,14 @@ define elexis::install (
     $precondition_for_elexis = Exec[$install_helper]
 
   } else { # use full zip
-    
+
     wget::fetch { $full_zip_url:
           destination => $elexis_zip,
           timeout     => 0,
           verbose     => false,
         }
 
-    
+
     elexis::unzip{$elexis_zip:
       zipfile => $elexis_zip,
       dest    => $install_dir,

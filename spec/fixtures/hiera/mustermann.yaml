@@ -15,14 +15,39 @@ samba::server::shares:
 elexis::samba::pdf_ausgabe: true
 elexis::samba::ensure: true
 
-elexis::params::elexis_main:
-    name:  not_elexis
+elexis::params::backup_user: backup_mustermann
+elexis::params::db_user: db_user_mustermann
+elexis::params::add_groups: [ gruppe_1, gruppe_2, gruppe_3 ]
+elexis::params::elexis_main: mustermann
+elexis::params::user_definition:
+  mustermann:
     mandant:  true
     ensure: present
-    uid: 4443
-    gid: 4445
-    group:   another_group
-    groups:  [ group1, group2 ]
-    comment: "Comment from fixture Mustermann"
+    uid: 5555
+    groups:  [ gruppe_1, gruppe_2 ]
+    pw_clear: not_so_secret
+    comment: "Comment from fixture Mustermann for not_arzt"
+    managehome: false
+    shell: "/bin/dash"
+  mpa2:
+    mandant:  false
+    ensure: present
+    groups:  [ gruppe_3, mpa ]
+    comment: "Comment from fixture Mustermann for mpa"
     managehome: true
-    shell: "/usr/bin/fish"
+    shell: "/bin/bash"
+  mpa:
+    mandant:  false
+    ensure: present
+    uid: 2000
+    groups:  [ gruppe_3, mpa2 ]
+    comment: "Comment from fixture Mustermann for mpa"
+    pw_hash: '$6$RIdobA4f$LhzqMuBBugJIB1WFDdZ1cyOX66Xjp745zCoVZ6YQ1MxLl5LdzUlCyJl7C.CtBuDESh5JZHFzci0HpPTZC61Yr/'
+    managehome: true
+    shell: "/bin/bash"
+  arzt1:
+    ensure: present
+    uid: 5556
+  arzt2:
+    ensure: absent
+    uid: 5557

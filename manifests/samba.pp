@@ -80,8 +80,8 @@ sudo -u \$2 mv \$1 ${samba_pdf}/\$FILENAME && logger cups-pdf moved \$1 to ${sam
 
     file{[$samba_base, $samba_praxis, $samba_pdf]:
       ensure  => directory,
-      group   => $::elexis::params::elexis_main[main],
-      owner   => $::elexis::params::elexis_main[main],
+      group   => $::elexis::params::elexis_main,
+      owner   => $::elexis::params::elexis_main,
 #      require => User['elexis'],
       mode    => '0664',
     }

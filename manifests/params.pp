@@ -17,8 +17,8 @@ class elexis::params (
   $ensure                 = false,
   $enfore_puppet_version  = '3.6.*',           # Upgrading to 3.7. will break many things, i suspect
   $db_type                = 'mysql',           # mysql or pg for postgresql
-  $main_user              = 'elexis',          # OS-Usersname for backups, etc
-  $db_user                = 'elexis',          # main db user (all privileges for elexis databases)
+  $backup_user            = 'backup_user',     # OS-Usersname for backups, etc
+  $db_user                = 'db_elexis_user',  # main db user (all privileges for elexis databases)
   $db_main                = 'elexis',          # Name of DB to use for production
   $db_test                = 'test',            # Name of test DB to use for production
   $db_password            = 'elexisTest',      # password of main DB user
@@ -37,32 +37,18 @@ class elexis::params (
   $elexis_file_server     = 'http://ftp.medelexis.ch/downloads_opensource',
   $samba_base             = '/home/samba',
   $main_allow_sudo_all    = true,
-  $elexis_main            = {
-                              name        => 'elexis',
-                              mandant     => true,
-                              ensure      => present,
-                              uid         => '1300',
-                              gid         => '1300',
-                              group       => 'elexis',
-                              groups      => [ dialout, cdrom, plugdev, netdev, adm, sudo, ssh ],
-                              comment     => 'Elexis User for Database and backup',
-                              managehome  => true,
-                              password    => 'elexisTest', # if nil it will not be set
-                              shell       => '/bin/bash',
-                            },
-  $user_definition        =  [ {  name        => 'arzt',
+  $elexis_main            = 'arzt',
+  $add_groups             =  [dialout, cdrom, plugdev, adm, sudo, ssh ], # groups mentioned here may not appear else in the user definition!
+  $user_definition        =  { arzt => {
                                   mandant     => true,
                                   ensure      => 'present', # will remove /home/arzt! (possible values absent, present, role)
                                   uid         => '1301',
-                                  gid         => '1301',
                                   comment     => 'Dr. Max Mustermann',
-                                  groups      => [ dialout, cdrom, elexis, plugdev, netdev, adm, sudo, ssh ],
+                                  groups      => [ dialout, cdrom, plugdev, adm, sudo, ssh ],
                                   managehome  => true,
-                                  password    => 'elexisTest', # if nil it will not be set
+                                  pw_clear    => 'test', # if nil it will not be set
                                   shell       => '/bin/bash',
-                                }
-                              ],
-
-)
-{
-}
+                                } ,
+                      }
+                     )
+{ }

@@ -17,6 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::mysql_server' do
+  let(:hiera_config) { }
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
@@ -28,6 +29,7 @@ describe 'elexis::mysql_server' do
 end
 
 describe 'elexis::mysql_server' do
+  let(:hiera_config) { }
   let(:node) { 'testhost.example.com' }
   let(:title) { 'demo' }
   let(:facts) { WheezyFacts }
@@ -43,15 +45,15 @@ describe 'elexis::mysql_server' do
                           /mysql_main_db_password\s+=\s+'elexisTest'/,
                           /\#{mysql_main_db_name}.dump.gz/,
                           ]
-                        
+
     it { should contain_user('mysql').with_ensure('present') }
     it { should contain_class('mysql::server') }
     it { should_not contain_class('mysql::client') }
-    
+
     mustHavesForDumps.each{ |must| it { should contain_file('/usr/local/bin/mysql_dump_elexis.rb'). with_content(must) } }
     mustHavesForDumps.each{ |must| it { should contain_file('/usr/local/bin/mysql_load_main_db.rb').with_content(must) } }
     mustHavesForDumps.each{ |must| it { should contain_file('/usr/local/bin/mysql_load_test_db.rb').with_content(must) } }
-    
+
     it { should contain_file('/usr/local/bin/mysql_load_main_db.rb').with_content(/--host localhost \#{mysql_main_db_name}/) }
     it { should contain_file('/usr/local/bin/mysql_load_test_db.rb').with_content(/--host localhost \#{mysql_tst_db_name}/) }
 
@@ -66,6 +68,7 @@ describe 'elexis::mysql_server' do
 end
 
 describe 'elexis::mysql_server' do
+  let(:hiera_config) { }
   let(:node) { 'testhost.example.com' }
   let(:title) { 'demo' }
   let(:facts) { WheezyFacts }
@@ -88,15 +91,15 @@ describe 'elexis::mysql_server' do
                           /mysql_main_db_password\s+=\s+'db_password'/,
                           /\#{mysql_main_db_name}.dump.gz/,
                           ]
-                        
+
     it { should contain_user('mysql').with_ensure('present') }
     it { should contain_class('mysql::server') }
     it { should_not contain_class('mysql::client') }
-    
+
     mustHavesForDumps.each{ |must| it { should contain_file('/usr/local/bin/mysql_dump_elexis.rb'). with_content(must) } }
     mustHavesForDumps.each{ |must| it { should contain_file('/usr/local/bin/mysql_load_main_db.rb').with_content(must) } }
     mustHavesForDumps.each{ |must| it { should contain_file('/usr/local/bin/mysql_load_test_db.rb').with_content(must) } }
-    
+
     it { should contain_file('/usr/local/bin/mysql_load_main_db.rb').with_content(/--host localhost \#{mysql_main_db_name}/) }
     it { should contain_file('/usr/local/bin/mysql_load_test_db.rb').with_content(/--host localhost \#{mysql_tst_db_name}/) }
 

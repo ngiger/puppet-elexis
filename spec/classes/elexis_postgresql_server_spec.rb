@@ -17,6 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::postgresql_server' do
+  let(:hiera_config) { }
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
@@ -27,6 +28,7 @@ describe 'elexis::postgresql_server' do
 end
 
 describe 'elexis::postgresql_server' do
+  let(:hiera_config) { }
   let(:facts) { WheezyFacts }
   let(:params) { {
             :ensure     => 'true',
@@ -63,9 +65,9 @@ describe 'elexis::postgresql_server' do
     it { should contain_postgresql__server__db('test') }
 
     it { should contain_postgresql__server__database_grant('GRANT reader - CONNECT - elexis') }
-    it { should contain_postgresql__server__database_grant('GRANT elexis - ALL - elexis') }
+    it { should contain_postgresql__server__database_grant('GRANT db_elexis_user - ALL - elexis') }
     it { should contain_postgresql__server__database_grant('GRANT reader - CONNECT - test') }
-    it { should contain_postgresql__server__database_grant('GRANT elexis - ALL - test') }
+    it { should contain_postgresql__server__database_grant('GRANT db_elexis_user - ALL - test') }
 
     it { should contain_file('/opt/backup/pg/dumps').with_ensure('directory') }
     it { should contain_file('/opt/backup/pg/backups').with_ensure('directory') }
@@ -76,6 +78,7 @@ describe 'elexis::postgresql_server' do
 end
 
 describe 'elexis::postgresql_server' do
+  let(:hiera_config) { }
   let(:facts) { WheezyFacts }
   let(:params) { {
             :ensure               => 'true',
@@ -110,7 +113,7 @@ describe 'elexis::postgresql_server' do
                 'db_user' => 'reader',
                 'db_password' => 'db_password',
                 'db_privileges' => 'CONNECT',
-              }, ] 
+              }, ]
                     }}
   context 'when running under Debian with changed parameters' do
     mustHavesForDumps = [ /logAction/,

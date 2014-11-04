@@ -22,9 +22,9 @@ class elexis::bootstrap(
       ensure   => present,
       provider => git,
       source  => 'https://github.com/ngiger/bootstrap-elexis-3.git',
-      require => User[$::elexis::params::main_user],
-      user    => $::elexis::params::main_user,
-      group   => $::elexis::params::main_user,
+      require => User[$::elexis::params::elexis_main],
+      user    => $::elexis::params::elexis_main,
+      group   => $::elexis::params::elexis_main,
     }
     exec{'bootstrap-elexis-3':
       require => [

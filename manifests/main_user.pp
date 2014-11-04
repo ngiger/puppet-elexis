@@ -5,15 +5,6 @@
 # Should be the main mandant
 #
 class elexis::main_user () inherits elexis::params {
-  $elexis_main     = $::elexis::params::elexis_main
-  ensure_resource( 'group', $elexis_main['name'], {ensure => present, gid => $elexis_main[gid] })
-  ensure_resource( 'user', $elexis_main['name'],
-                  { ensure => present,
-                    uid => $elexis_main[uid],
-                    gid => $elexis_main[gid],
-                    groups => $elexis_main[groups],
-                    # managehome => $elexis_main[managehome],
-                    # password => $elexis_main[password],
-                    shell => $elexis_main[shell],
-                  } )
+  $elexis_main     = $::elexis::params::main_user
+  # notify{"Main user ist $elexis_main": }
 }

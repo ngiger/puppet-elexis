@@ -7,40 +7,24 @@
 # * pin puppet to a known good version
 # * allows main user to sudo all stuff
 #
-class elexis::common() inherits elexis::params {
-  $elexis_main = $::elexis::params::elexis_main
-  $main_name   = $elexis_main[name]
-  $main_uid    = $elexis_main[uid]
-  $main_gid    = $elexis_main[gid]
+class elexis::common() {
+  include elexis::params
+  include elexis::users
+  $elexis_main   = $elexis::params::elexis_main
+  notify { "commont main $elexis_main": }
   file { $::elexis::params::download_dir:
     ensure  => directory, # so make this a directory
-    require => User[$main_name],
-    owner   => $main_name,
-    group   => $main_gid,
+    require => User[$elexis_main],
+    owner   => $elexis_main,
+    group   => $elexis_main,
   }
-  group{$main_name:
-    ensure => present,
-    gid    => $main_gid,
-  }
-
-  if !defined(User[$main_name]) {
-    user{"$main_name":
-      ensure => present,
-      uid    => "$main_uid",
-      gid    => "$main_gid",
-      shell  =>  $elexis_main[shell],
-      groups =>  $elexis_main[groups],
-      comment =>  $elexis_main[comment],
-    }
-  }
-
   if ( $::elexis::params::main_allow_sudo_all == true) {
-    file {'/etc/sudoers.d/elexis':
+    file {"/etc/sudoers.d/$elexis_main":
       ensure  => present,
-      content => "${main_name} ALL=NOPASSWD:ALL\n",
+      content => "$elexis_main ALL=NOPASSWD:ALL\n",
       mode    => '0440',
     }
-  } else { file {'/etc/sudoers.d/elexis': ensure  => absent, }
+  } else { file {"/etc/sudoers.d/$elexis_main": ensure  => absent, }
   }
 
   if ($::elexis::params::enfore_puppet_version) {

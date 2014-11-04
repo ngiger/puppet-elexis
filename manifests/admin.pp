@@ -6,9 +6,10 @@ class elexis::admin (
   $packages   = [fish, mosh, screen, lm-sensors, git, unzip, dlocate, mlocate, htop, curl, bzr, unattended-upgrades, anacron],
 ) inherits elexis::common {
   $managed_note = hiera('managed_note', '# managed by puppet elexis::admin')
-  if ($ensure == true) {
+  if ($ensure) {
     ensure_packages($packages)
-
+    $main_name   = $elexis::params::elexis_main
+    notify {"xxx $main_name": }
     # The config writer personal choice
     if hiera('editor::default', false) {
       $editor_default = hiera('editor::default', '/usr/bin/vim.nox')
@@ -55,16 +56,16 @@ class elexis::admin (
     file { '/usr/local/bin/reboot.sh':
       content => "sudo /sbin/shutdown -r -t 30 now\n",
       owner   => root,
-      group   => 'elexis',
+      group   => $main_name,
       mode    => '6554',
-      require => User['elexis'],
+      require => User[$main_name],
     }
 
     file { '/usr/local/bin/halt.sh':
       content => "sudo /sbin/shutdown -h -t 30\n",
       owner   => root,
-      group   => 'elexis',
-      require => User['elexis'],
+      group   => $main_name,
+      require => User[$main_name],
       mode    => '6554',
     }
   }
