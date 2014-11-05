@@ -22,17 +22,14 @@ describe 'elexis::admin' do
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-#    it { should have_resource_count(NrResourcesInElexisCommon) }
-    it { should contain_elexis__admin }
-    it { should contain_elexis__common }
-    it { should contain_elexis__params }
-    it { should contain_apt__hold('puppet-common') }
-    it { should contain_apt__hold('puppet') }
-    it { should contain_apt__params }
-    it { should contain_file('/etc/sudoers.d/arzt') }
-    it { should contain_file('/opt/downloads').with_ensure('directory') }
-    it { should contain_group('arzt') }
-    it { should contain_user('arzt') }
+    it { should have_resource_count(1) }
+  end
+
+  context 'when running with ensure true' do
+    let(:params) { { :ensure => true } }
+    it { should compile }
+    it { should compile.with_all_deps }
+    it { should have_resource_count(NrResourcesInElexisCommon) }
   end
 end
 
@@ -48,14 +45,8 @@ describe 'elexis::admin' do
     it { should compile }
     it { should compile.with_all_deps }
     it { should contain_elexis__admin }
-    it { should contain_elexis__common }
-    it { should contain_elexis__params }
-    it { should contain_apt__hold('puppet-common') }
-    it { should contain_apt__hold('puppet') }
-    it { should contain_apt__params }
-    it { should contain_file('/etc/sudoers.d/mustermann').with_content(/mustermann ALL=NOPASSWD:ALL/) }
-    it { should contain_file('/opt/downloads').with_ensure('directory') }
-    it { should contain_group('mustermann') }
-    it { should contain_user('mustermann') }
+    it { should contain_exec('set_timezone_zurich') }
+    it { should contain_file('/usr/local/bin/halt.sh') }
+    it { should contain_file('/usr/local/bin/reboot.sh') }
   end
 end

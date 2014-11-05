@@ -10,29 +10,30 @@
 class elexis::common() {
   include elexis::params
   include elexis::users
-  $elexis_main   = $elexis::params::elexis_main
-  notify { "commont main $elexis_main": }
-  file { $::elexis::params::download_dir:
-    ensure  => directory, # so make this a directory
-    require => User[$elexis_main],
-    owner   => $elexis_main,
-    group   => $elexis_main,
-  }
-  if ( $::elexis::params::main_allow_sudo_all == true) {
-    file {"/etc/sudoers.d/$elexis_main":
-      ensure  => present,
-      content => "$elexis_main ALL=NOPASSWD:ALL\n",
-      mode    => '0440',
+  if ($::elexis::params::ensure) {
+    $elexis_main   = $elexis::params::elexis_main
+    file { $::elexis::params::download_dir:
+      ensure  => directory, # so make this a directory
+      require => User[$elexis_main],
+      owner   => $elexis_main,
+      group   => $elexis_main,
     }
-  } else { file {"/etc/sudoers.d/$elexis_main": ensure  => absent, }
-  }
+    if ( $::elexis::params::main_allow_sudo_all == true) {
+      file {"/etc/sudoers.d/$elexis_main":
+        ensure  => present,
+        content => "$elexis_main ALL=NOPASSWD:ALL\n",
+        mode    => '0440',
+      }
+    } else { file {"/etc/sudoers.d/$elexis_main": ensure  => absent, }
+    }
 
-  if ($::elexis::params::enfore_puppet_version) {
-    # notice("puppet pinned to ${::elexis::params::enfore_puppet_version}")
-    apt::hold {['puppet', 'puppet-common']:
-      version => '3.6*',
+    if ($::elexis::params::enfore_puppet_version) {
+      # notice("puppet pinned to ${::elexis::params::enfore_puppet_version}")
+      apt::hold {['puppet', 'puppet-common']:
+        version => '3.6*',
+      }
+    } else {
+      notice('dangeros no enfore_puppet_version')
     }
-  } else {
-    notice('dangeros no enfore_puppet_version')
   }
 }

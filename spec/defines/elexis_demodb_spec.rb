@@ -17,12 +17,13 @@
 require 'spec_helper'
 
 describe 'elexis::demodb' do
+  let(:hiera_config) { }
   context 'when running under Debian with ensure' do
-  let(:title) { 'demoDB_for_elexis' }
-  let(:params) { {:user => 'elexis',}}
-    it { should contain_user('elexis').with_ensure('present') }
-    it { should contain_file('/home/elexis/elexis').with_ensure('directory') }
-    it { should contain_exec('unzip_demodb_for_elexis') }
+    let(:title) { 'demoDB_for_elexis' }
+    let(:params) { {:user => 'test_user',}}
+    it { should contain_file('/home/test_user/elexis').with_ensure('directory') }
+    it { should contain_elexis__unzip('unzip_demodb_for_test_user') }
+    it { should contain_exec('unzip_/home/test_user/elexis_/home/test_user/elexis/demoDB') }
     it { should contain_exec('wget_demodb') }
   end
 end

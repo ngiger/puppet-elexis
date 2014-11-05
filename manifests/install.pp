@@ -4,6 +4,8 @@
 # you can have more than one installation in parallel
 # A shortcut for the $title is placed under /usr/local/bin
 #
+# TODO: https://help.ubuntu.com/community/UnityLaunchersAndDesktopFiles, eg. add right click options to the Elexis-Menu
+#  gsettings get com.canonical.Unity.Launcher favorites
 
 define elexis::install (
   $exe_name               = 'Elexis3',
@@ -80,7 +82,7 @@ define elexis::install (
 ) {
   include ::wget
   include ::elexis::users
-  $main_user      = $::elexis::params::elexis_main
+  $main_user      = "$::elexis::params::elexis_main"
   $install_dir    = "${install_base}/${version}"
   $full_exec_path = "${install_dir}/${exe_name}"
   $director_url   = 'http://mirror.switch.ch/eclipse/tools/buckminster/products/director_latest.zip'
@@ -147,7 +149,7 @@ define elexis::install (
       zipfile => $elexis_zip,
       dest    => $install_dir,
       require => Wget::Fetch[$full_zip_url],
-      creates => $full_exec_path,
+      creates => "$install_dir/configuration",
       user    => $main_user,
       group   => $main_user,
     }
@@ -157,7 +159,7 @@ define elexis::install (
   # elexis always wants to open a pdf with evince and not okular
   # Debian sets evince as default pdf-viewer in /etc/mailcap or ~/.mailcap
   # is this true? September 2014 found okular in /etc/mailcap in server-VM
-  ensure_packages(['evince', 'iceweasel'], { ensure => present, } )
+  ensure_packages(['evince'] )
 
   $logicalLink = "/usr/local/bin/${title}"
   file { $logicalLink:

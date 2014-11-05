@@ -21,7 +21,7 @@ describe 'elexis::mysql_server' do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
-    it { should have_resource_count(1 + NrResourcesInElexisCommon) }
+    it { should have_resource_count(2) }
     it { should contain_user('mysql').with_ensure('present') }
     it { should_not contain_service('mysql-server').with_ensure('present') }
     it { should_not contain_package('mysql-client').with_ensure('present') }
@@ -61,7 +61,7 @@ describe 'elexis::mysql_server' do
     it { should contain_mysql_database('test').with_ensure(/present/) }
 
     it { should contain_file('/etc/mysql/conf.d/lowercase.cnf').with_content(/\[mysqld\]\nlower_case_table_names=1\n/) }
-    it { should contain_file('/opt/backup/mysql/dumps').with_ensure('directory') }
+    it { should contain_exec('/opt/backup/mysql/dumps') }
     it { should_not contain_file('/opt/backup/mysql/backups') }
     it { should_not contain_file('/etc/cron.d/rsnapshot_mysql_server') }
   end
@@ -107,12 +107,11 @@ describe 'elexis::mysql_server' do
     it { should contain_mysql_database('db_test').with_ensure(/present/) }
 
     it { should contain_file('/etc/mysql/conf.d/lowercase.cnf').with_content(/\[mysqld\]\nlower_case_table_names=1\n/) }
-    it { should contain_file('/backup/mysql/dumps').with_ensure('directory') }
+    it { should contain_exec('/backup/mysql/dumps') }
     it { should contain_cron('mysql_dump').with_command(/ionice -c3 \/usr\/local\/bin\/mysql_dump_elexis.rb/) }
     it { should contain_cron('mysql_dump').with_minute(6  ) }
     it { should contain_cron('mysql_dump').with_hour(23) }
     it { should contain_cron('mysql_dump').with_user('pg') }
-    it { should_not contain_file('/opt/backup/mysql/backups') }
     it { should_not contain_file('/etc/cron.d/rsnapshot_mysql_server') }
   end
 end

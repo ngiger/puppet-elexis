@@ -18,13 +18,14 @@ require 'spec_helper'
 
 describe 'elexis::samba', :type => :class  do
   let(:facts) { WheezyFacts }
-  if false
+  let(:hiera_config) {  }
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
     it { should_not contain_file('/etc/samba/smb.conf.tested') }
 
   end
+
   context 'when running with default parameters' do
     let(:params) { {:ensure => 'present', :pdf_ausgabe  => true }}
     it { should compile }
@@ -43,7 +44,9 @@ describe 'elexis::samba', :type => :class  do
     it { should contain_elexis__params }
     it { should contain_elexis__samba }
   end
-  end
+end
+
+describe 'elexis::samba', :type => :class  do
   context 'when running with parameters from mustermann' do
     let(:params) { {:ensure => 'present',  :pdf_ausgabe  => true, :with_x2go => true }}
     let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }

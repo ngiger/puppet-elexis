@@ -1,4 +1,4 @@
-elexis::demodb{'demoDB for elexis': user => 'elexis' }
+elexis::demodb{'demoDB for elexis': username => 'mustermann' }
 
 
 

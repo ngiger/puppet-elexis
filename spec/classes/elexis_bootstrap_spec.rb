@@ -22,17 +22,12 @@ describe 'elexis::bootstrap' do
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    it { should have_resource_count(NrResourcesInElexisCommon) }
-    it { should contain_user('arzt') }
-    it { should contain_group('arzt') }
-    it { should contain_file('/etc/sudoers.d/arzt') }
-    it { should contain_file('/opt/downloads') }
+    it { should have_resource_count(0) }
   end
   context 'when running under Debian with ensure' do
   let(:params) { {:ensure => true,}}
     it { should compile }
     it { should compile.with_all_deps }
-    it { should contain_apt__params }
     it { should contain_elexis__bootstrap }
     it { should contain_elexis__common }
     it { should contain_elexis__params }

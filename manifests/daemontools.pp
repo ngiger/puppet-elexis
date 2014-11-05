@@ -6,8 +6,7 @@ class elexis::daemontools inherits elexis::common {
     ensure => directory,
     mode   => '0644',
   }
-    notice("daemontools ${::elexis::params::create_service_script} ")
-  
+
   file { $::elexis::params::create_service_script:
     source  => 'puppet:///modules/elexis/create_service.rb',
     mode    => '0774',

@@ -16,6 +16,7 @@ define elexis_add_users(
   $pw_hash    = nil,
 ) {
   group{$title: gid => $uid, ensure => present}
+  if ($comment == nil) { $use_comment = "$title" } else { $use_comment = "$comment" }
   if ( "$title" == "$::elexis::params::elexis_main") {
     user{ $title:
       ensure   => $ensure,
@@ -23,7 +24,7 @@ define elexis_add_users(
       uid      => $uid,
       gid      => $uid,
       groups   => $groups,
-      comment  => $comment,
+      comment  => $use_comment,
       shell    => $shell,
       require  => Group[$groups],
     }
@@ -34,7 +35,7 @@ define elexis_add_users(
       uid      => $uid,
       gid      => $uid,
       groups   => $groups,
-      comment  => $comment,
+      comment  => $use_comment,
       shell    => $shell,
       require  => [
         Group[$groups],
@@ -50,11 +51,17 @@ define elexis_add_users(
     pw_hash   => $pw_hash
   }
 }
+notify{"elexis::Users ": }
   # https://tobrunet.ch/2013/01/iterate-over-datastructures-in-puppet-manifests/
 class elexis::users() {
   include elexis::common
   include elexis::params
-  # notify{"Gen users from  $::elexis::params::user_definition":}
-  create_resources(elexis_add_users,  $::elexis::params::user_definition, {})
-  ensure_resource(group, $::elexis::params::add_groups)
+  if ($::elexis::params::ensure) {
+    # notify{"Gen add_groups from  $::elexis::params::add_groups":}
+    ensure_resource(group, $::elexis::params::add_groups, { ensure => present} )
+    # notify{"Gen users from  $::elexis::params::user_definition":}
+    create_resources(elexis_add_users,  $::elexis::params::user_definition, {})
+  } else {
+    # notify{"Skipping user generation as $::elexis::params::ensure": }
+  }
 }

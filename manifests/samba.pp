@@ -17,6 +17,7 @@ class elexis::samba (
   $x2go_mac_version     = '4.0.1.0',
 )  {
   include elexis::common
+  $samba_owner = root
   if ($ensure != absent) {
     if ($pdf_ausgabe == false) {
       class {'samba::server': }
@@ -80,8 +81,8 @@ sudo -u \$2 mv \$1 ${samba_pdf}/\$FILENAME && logger cups-pdf moved \$1 to ${sam
 
     file{[$samba_base, $samba_praxis, $samba_pdf]:
       ensure  => directory,
-      group   => $::elexis::params::elexis_main,
-      owner   => $::elexis::params::elexis_main,
+      group   => $samba_owner,
+      owner   => $samba_owner,
 #      require => User['elexis'],
       mode    => '0664',
     }

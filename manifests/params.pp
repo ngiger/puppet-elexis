@@ -25,15 +25,15 @@ class elexis::params (
   $db_pw_hash             = '',                # or better and used if present password hash of main DB user
   $java                   = 'openjdk-7-jdk',
   $bin_dir                = '/usr/local/bin',  # where we will put our binary helper scripts
+  $create_service_script  = "/usr/local/bin/create_service.rb",
   $service_path           = '/var/lib/service',
   $jenkins_root           = '/opt/jenkins',
   $download_dir           = '/opt/downloads',
   $download_url           = 'http://ftp.medelexis.ch/downloads_opensource',
   $jenkins_downloads      = '/opt/jenkins/downloads',
+  $dest_zip               = "/opt/jenkins/downloads/floatflt.zip",
   $jenkins_jobs_dir       = '/opt/jenkins/jobs',
   $elexis_base_url        = 'http://hg.sourceforge.net/hgweb/elexis',
-  $create_service_script  = "${::elexis::params::bin_dir}/create_service.rb",
-  $dest_zip               = "${::elexis::params::download_dir}/floatflt.zip",
   $elexis_file_server     = 'http://ftp.medelexis.ch/downloads_opensource',
   $samba_base             = '/home/samba',
   $main_allow_sudo_all    = true,

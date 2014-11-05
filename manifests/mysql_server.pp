@@ -2,7 +2,7 @@
 # encoding: utf-8
 # mysql-server environment for Elexis
 # as per version 2.3 we can specify almost anything as parameter to the mysql::server class
-# 
+#
 class elexis::mysql_server(
   $ensure                  = false,
   $mysql_main_db_name      = 'elexis',
@@ -73,6 +73,7 @@ class elexis::mysql_server(
 },
 ) inherits elexis::params {
   include elexis::admin
+  include mysql::params
   ensure_resource('user', 'mysql', { ensure => present})
   $mysql_dump_script       = '/usr/local/bin/mysql_dump_elexis.rb'
   $mysql_load_main_script  = '/usr/local/bin/mysql_load_main_db.rb'
@@ -125,7 +126,7 @@ class elexis::mysql_server(
         ensure  => present,
         command => "${ionice} ${mysql_dump_script} >>/var/log/mysql_dump.log 2>&1",
         user    => $mysql_main_db_user,
-        require => File[$mysql_dump_script, $mysql_dump_dir],
+        require => [File[$mysql_dump_script], Exec[$mysql_dump_dir],],
         }, $dump_crontab_params
       )
     )
@@ -144,10 +145,9 @@ class elexis::mysql_server(
       require => File[$elexis::admin::pg_util_rb],
     }
 
-    file { [ $mysql_dump_dir]:
-      ensure  => directory,
-      mode    => '0775',
-      recurse => true,
+    exec { [ $mysql_dump_dir]:
+      command => "/bin/mkdir -p $mysql_dump_dir",
+      unless => "/usr/bin/test -d $mysql_dump_dir",
     }
   }
 }

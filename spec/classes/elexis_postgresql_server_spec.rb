@@ -21,7 +21,7 @@ describe 'elexis::postgresql_server' do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
-    it { should have_resource_count(NrResourcesInElexisCommon) }
+    it { should have_resource_count(1) }
     it { should_not contain_service('postgresql-server').with_ensure('present') }
     it { should_not contain_package('postgresql-client').with_ensure('present') }
   end

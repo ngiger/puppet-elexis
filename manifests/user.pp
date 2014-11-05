@@ -42,13 +42,15 @@ define setpass_hash($hash, $file='/etc/shadow') {
 }
 
 define setpass_cleartext($cleartext) {
-  notify{"setpass_cleartext $title $cleartext": }
-  exec{"set_passwd_$title":
-    command => "/usr/bin/passwd $title <<EOF
-$cleartext
-$cleartext
-EOF
+  exec{"set_passwd_${title}":
+    command => "/bin/echo '/usr/bin/passwd $title <<EOF' > /opt/set_passwd_${title}
+/bin/echo '$cleartext'                   >> /opt/set_passwd_${title}
+/bin/echo '$cleartext'                   >> /opt/set_passwd_${title}
+/bin/echo 'EOF'                   >> /opt/set_passwd_${title}
+/bin/bash /opt/set_passwd_${title}
 ",
+    require   => User[$title],
+    unless    => "/bin/grep ${title}:.+: /etc/shadow",
   }
 }
 
@@ -62,12 +64,14 @@ define elexis::user(
   if ($ensure != absent) {
     if ($pw_clear != nil)   { setpass_cleartext { $username: cleartext => $pw_clear,  } }
     elsif ($pw_hash != nil) { setpass_hash      { $username: hash      => $pw_hash,  } }
+    ensure_resource('user', "$username")
     file{"Create_Home for ${username}":
       source  => '/etc/skel',
       recurse => remote,
       path    => "/home/${username}",
       owner   => $uid,
       group   => $uid,
+      require => User[$username],
     }
   } else {
     file{"/home/${username}":

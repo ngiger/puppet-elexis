@@ -16,28 +16,31 @@
 #
 require 'spec_helper'
 
-describe 'elexis::common' do
+describe 'elexis::elexis_installations' do
   let(:hiera_config) { }
   let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    it { should have_resource_count(0) }
+    it { should contain_elexis__elexis_installations }
+      it { should_not contain_elexis__demodb}
+    it { should_not contain_elexis__install}
   end
 end
-describe 'elexis::common' do
-  main_user = 'mustermann'
+
+describe 'elexis::elexis_installations' do
   let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
-  context 'when running with hiera  ' do
+  let(:facts)  { { :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'} }
+  let(:params) { {} }
+  context 'when running with params from hiera' do
     it { should compile }
     it { should compile.with_all_deps }
-    it { should have_resource_count(NrResourcesInElexisCommon_with_Hiera) }
-    it { should contain_apt__params }
-    it { should contain_elexis__common }
-    it { should contain_elexis__params }
-    it { should contain_file('/opt/downloads').with_ensure('directory').with_owner(main_user).with_group(main_user) }
-    it { should contain_file('/etc/sudoers.d/mustermann').with_mode('0440') }
-    it { should contain_user(main_user) }
-    it { should contain_group(main_user) }
+    it { should contain_elexis__elexis_installations }
+    it { should contain_setpass_cleartext('test') }
+    it { should contain_elexis__demoDB('elexis_3_opensource')}
+    it { should contain_elexis__install('elexis_3_opensource')}
+    it { should contain_file('/usr/local/bin/elexis_3_opensource') }
+    it { should contain_file('/usr/share/applications/elexis_3_opensource.desktop') }
+    it { should contain_file('/usr/share/icons/hicolor/128x128/apps/elexis_3_opensource.png') }
   end
 end

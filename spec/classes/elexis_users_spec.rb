@@ -21,21 +21,8 @@ describe 'elexis::users' do
   let(:hiera_config) { }
   context 'when running under Debian with defaults' do
     let(:title) { 'defaults' }
-    it { should contain_group('arzt').only_with(
-                                                'gid'    => '1301',
-                                                'ensure' => 'present',
-                                                'name'   => 'arzt',
-                                               ) }
-    it { should contain_user('arzt').with(
-    'name' => 'arzt',
-    'ensure' => 'present',
-    'uid'    => '1301',
-    'gid'    => '1301',
-    # 'password'    => '$6$4OQ1nIYTLfXE$xFV/8f6MIAo6XKZg8fYbF//w1lhFrCJ60JMcptwESgbHaH52c2UZbUUAAlydCRQy9wDYEgt5dUpTyHjFhCy5E',
-    # 'comment'    => nil,
-    'shell'    => '/bin/bash',
-    'group'    => nil,
-  ) }
+    it { should_not contain_group }
+    it { should_not contain_user }
   end
 end
 

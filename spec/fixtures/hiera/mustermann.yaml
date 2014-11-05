@@ -15,6 +15,15 @@ samba::server::shares:
 elexis::samba::pdf_ausgabe: true
 elexis::samba::ensure: true
 
+elexis::elexis_installations::demoDB:
+  elexis_3_opensource:
+    user: test
+elexis::elexis_installations::opensource:
+  elexis_3_opensource:
+    exe_name: Elexis_OpenSource_3
+elexis::params::ensure: true
+elexis::params::mysql_server::ensure: true
+elexis::params::postgresql_server::ensure: true
 elexis::params::backup_user: backup_mustermann
 elexis::params::db_user: db_user_mustermann
 elexis::params::add_groups: [ gruppe_1, gruppe_2, gruppe_3 ]
@@ -51,3 +60,8 @@ elexis::params::user_definition:
   arzt2:
     ensure: absent
     uid: 5557
+  test:
+    ensure: present
+    uid: 5558
+    pw_clear: test
+

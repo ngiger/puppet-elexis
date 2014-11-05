@@ -11,19 +11,15 @@ define elexis::unzip (
 )  {
   ensure_packages(['unzip'], { ensure => present, } )
   if ($creates != nil) {
-    exec { "unzip_${dest}":
-      command => "/usr/bin/unzip -d ${dest} -o -qq ${zipfile}",
+    exec { "unzip_${dest}_${creates}":
+      command => "/usr/bin/unzip -d ${dest} -o -qq ${zipfile} && /bin/chown -R $user:$group $dest",
       require => [ Package['unzip'] ],
       creates => $creates,
-      user    => $user,
-      group   => $group,
     }
   } else {
     exec { "unzip_${dest}":
-      command => "/usr/bin/unzip -d ${dest} -o -qq ${zipfile}",
+      command => "/usr/bin/unzip -d ${dest} -o -qq ${zipfile} && /bin/chown -R $user:$group $dest",
       require => [ Package['unzip'] ],
-      user    => $user,
-      group   => $group,
     }
   }
 }

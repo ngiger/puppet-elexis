@@ -1,13 +1,13 @@
 # Here we define all needed stuff to bring up a complete
 # PostgreSQL server environment for Elexis
 # https://puppetlabs.com/blog/module-of-the-week-inkling-postgresql/
-# github: https://github.com/puppetlabs/puppet-postgresql 
+# github: https://github.com/puppetlabs/puppet-postgresql
 
 # with the default values you can afterward connect as follows to the DB
 # psql elexis -U elexis -h localhost --password  # pw is elexisTest
 
 class elexis::postgresql_server(
-  $ensure               = absent,
+  $ensure               = false,
   $pg_main_db_name      = $::elexis::params::db_main,
   $pg_main_db_user      = $::elexis::params::db_user,
   $pg_main_db_password  = $::elexis::params::db_password,
@@ -65,7 +65,9 @@ class elexis::postgresql_server(
   $pg_fill_script       = '/usr/local/bin/pg_fill.rb'
   $pg_archive_wal_script= '/usr/local/bin/pg_archive_wal.sh'
 
-  unless ($ensure == absent) {
+  # notify{"elexis::postgresql_server ensure $ensure and $::elexis::params::ensure": }
+  if ($ensure) {
+    notify{"elexis::postgresql_server xxxx $ensure": }
     class { 'postgresql::globals':
       manage_package_repo => true,
       encoding            => 'UTF8',
@@ -77,14 +79,14 @@ class elexis::postgresql_server(
     }
     include concat::setup
     include postgresql::client
-    
+
     user{'postgres':
       require => Package[$postgresql::params::client_package_name],
     }
     group{'postgres':
       require => Package[$postgresql::params::client_package_name],
     }
-    
+
     file  { '/var/lib/postgresql/.ssh/':
       ensure  => directory,
       owner   => $pg_user,
@@ -98,10 +100,10 @@ class elexis::postgresql_server(
       user    => $pg_user,
       require => File['/var/lib/postgresql/.ssh/'],
     }
-    
+
     elexis::pg_dbusers{$pg_dbs:}
     if ($pg_setup_hot_sync == true) {
-      
+
     elexis::mkdir_p{"${pg_backup_dir}/wal": }
     file  { "${pg_backup_dir}/wal/":
       ensure => directory,
@@ -134,22 +136,22 @@ class elexis::postgresql_server(
         condition => "Host ${backup_partner}",
         value     => 'yes',
       }
-      
+
       file {[$backup_dir]:
         ensure => directory,
       }
-      
+
       if $reverse_backup_dir {
         file { $reverse_backup_dir:
           ensure => directory,
         }
       }
-      
+
       file { "${backup_dir}/wal":
         ensure  => directory,
         require => File[$backup_dir],
       }
-      
+
     }
     file {$pg_archive_wal_script:
       ensure => present,
@@ -158,7 +160,7 @@ class elexis::postgresql_server(
       group  => 'postgres',
       mode   => '0744',
     }
-      
+
     # $config_hash = hiera('pg::config_hash', '')
     $conf_dir    = $postgresql::params::confdir
     $archive_timeout = hiera('pg::pg_archive_timeout', '600') # by default every 10 minutes = 600 seconds
@@ -190,7 +192,7 @@ class elexis::postgresql_server(
       address     => '127.0.0.1/32',
       auth_method => 'md5',
     }
-    
+
     if ($pg_dump_dir) {
 
     file {$pg_dump_script:
@@ -206,21 +208,21 @@ class elexis::postgresql_server(
       content => template('elexis/pg_common.rb.erb', 'elexis/pg_fill.rb.erb'),
       require => File[$elexis::admin::pg_util_rb],
     }
-    
+
     file {$pg_load_test_script:
       ensure  => present,
       mode    => '0755',
       content => template('elexis/pg_common.rb.erb', 'elexis/pg_load_tst_db.rb.erb'),
       require => File[$elexis::admin::pg_util_rb],
     }
-    
+
     file {$pg_load_main_script:
       ensure  => present,
       mode    => '0755',
       content => template('elexis/pg_common.rb.erb', 'elexis/pg_load_main_db.rb.erb'),
       require => File[$elexis::admin::pg_util_rb],
     }
-    
+
     file {$pg_poll_script:
       ensure  => present,
       mode    => '0755',
@@ -237,7 +239,7 @@ class elexis::postgresql_server(
       group   => $::postgresql::params::group,
       require => Elexis::Mkdir_p[$pg_backup_dir],
     }
-      
+
     elexis::mkdir_p{$pg_dump_dir: }
     file { $pg_dump_dir :
       ensure  => directory,
@@ -247,7 +249,7 @@ class elexis::postgresql_server(
       group   => $::postgresql::params::group,
       require => Elexis::Mkdir_p[$pg_dump_dir],
     }
-      
+
     ensure_resource('cron', 'pg_dump',
       merge( {
         ensure  => present,
@@ -269,7 +271,7 @@ class elexis::postgresql_server(
   ${pg_load_test_script}  >/var/log/pg_load_test.log 2>&1
   "
     }
-    
+
     file {'/etc/logrotate.d/pg_elexis_dump':  ensure => absent}
     }
   }
@@ -291,7 +293,7 @@ define elexis::pg_dbuser(
       require       => Service[postgresqld],
     }
   }
-  
+
   if !defined(Postgresql::Server::Db[$db_name]) {
     postgresql::server::db{$db_name:
       user     => $db_user,
