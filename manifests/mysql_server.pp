@@ -74,12 +74,13 @@ class elexis::mysql_server(
 ) inherits elexis::params {
   include elexis::admin
   include mysql::params
-  ensure_resource('user', 'mysql', { ensure => present})
   $mysql_dump_script       = '/usr/local/bin/mysql_dump_elexis.rb'
   $mysql_load_main_script  = '/usr/local/bin/mysql_load_main_db.rb'
   $mysql_load_test_script  = '/usr/local/bin/mysql_load_test_db.rb'
 
   if ($ensure){
+    ensure_resource('user', 'mysql',  { ensure => present, system => true })
+    # Package[$::mysql::params::server_package_name] ~> Group['mysql']
     class { '::mysql::server':
         root_password => $root_password,
         users         => $users,

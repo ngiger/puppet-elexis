@@ -16,6 +16,8 @@ fixtures:
       samba: "thias/samba"
       ssh: 'erwbgy/ssh'
       fooacl: 'thias/fooacl'
+      nfs: jbeard/nfs
+      portmap: jbeard/portmap
   repositories:
     rsnapshot: "git://github.com/ngiger/puppet-rsnapshot.git"
 #    mysql: "https://github.com/puppetlabs/puppetlabs-mysql.git"

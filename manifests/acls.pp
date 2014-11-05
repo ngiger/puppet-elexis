@@ -35,5 +35,5 @@ class elexis::acls(
 }
 
 define add_acl($permissions) {
-  fooacl::conf {"${title}_${permissions}":  permissions => $permissions ,  }
+  fooacl::conf {"${title}_${permissions}":  target => $title, permissions => $permissions ,  }
 }

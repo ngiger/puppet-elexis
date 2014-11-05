@@ -42,6 +42,12 @@ class elexis::backup(
   $has_luks_backup      = false,
   $luks_keys            = nil,
 ) inherits elexis::params {
+  include elexis::samba
+  if ("$::elexis::samba::samba_base" != '/home/samba') {
+    $all_dirs = concat($dirs_to_backup, ["$::elexis::samba::samba_base"])
+  } else {
+    $all_dirs = $dirs_to_backup
+  }
   if ($ensure == absent) {
     } else {
     rsnapshot::crontab{'elexis_backup':
@@ -54,7 +60,7 @@ class elexis::backup(
       time_weekly  => $backup_weekly,
       time_monthly => $backup_monthly,
     }
-    elexis::mkdir_p{$dirs_to_backup:}
+    elexis::mkdir_p{$all_dirs:}
     elexis::mkdir_p{$backup_dir:}
   }
 }

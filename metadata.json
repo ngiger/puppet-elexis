@@ -19,6 +19,7 @@
     {"name":"thias/samba","version_requirement":">= 0.1.4"},
     {"name":"loic/rsnapshot","version_requirement":">= 1.0.0"},
     {"name":"erwbgy/ssh","version_requirement":">= 0.2.0"},
+    {"name":"jbeard/nfs","version_requirement":">= 0.1.0"},
     {"name":"thias/fooacl","version_requirement":">= 1.0.0"}
   ]
 }

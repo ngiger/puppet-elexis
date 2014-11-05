@@ -21,8 +21,8 @@ describe 'elexis::mysql_server' do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
-    it { should have_resource_count(2) }
-    it { should contain_user('mysql').with_ensure('present') }
+    it { should have_resource_count(1) }
+    it { should_not contain_user('mysql') }
     it { should_not contain_service('mysql-server').with_ensure('present') }
     it { should_not contain_package('mysql-client').with_ensure('present') }
   end
@@ -46,7 +46,7 @@ describe 'elexis::mysql_server' do
                           /\#{mysql_main_db_name}.dump.gz/,
                           ]
 
-    it { should contain_user('mysql').with_ensure('present') }
+    it { should contain_user('mysql').with_ensure('present').with_system('true') }
     it { should contain_class('mysql::server') }
     it { should_not contain_class('mysql::client') }
 

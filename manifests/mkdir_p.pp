@@ -16,5 +16,7 @@
 #
 
 define elexis::mkdir_p{
-  exec{"$title": command => "/bin/mkdir -p ${title}", unless => "/usr/bin/test -d ${title}" }
+  unless defined(Exec[$title]) {
+    exec{"$title": command => "/bin/mkdir -p ${title}", unless => "/usr/bin/test -d ${title}" }
+  }
 }

@@ -38,7 +38,9 @@ class elexis::params (
   $samba_base             = '/home/samba',
   $main_allow_sudo_all    = true,
   $elexis_main            = 'arzt',
-  $add_groups             =  [dialout, cdrom, plugdev, adm, sudo, ssh ], # groups mentioned here may not appear else in the user definition!
+  # groups mentioned here may not appear else in the user definition!
+  $add_groups             = [ practitioners, owners ],
+  $add_system_groups      = [ dialout, cdrom, plugdev, adm, sudo, ssh ],
   $user_definition        =  { arzt => {
                                   mandant     => true,
                                   ensure      => 'present', # will remove /home/arzt! (possible values absent, present, role)

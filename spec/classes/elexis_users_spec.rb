@@ -36,6 +36,8 @@ describe 'elexis::users' do
     it { should contain_file('/opt/downloads').with_ensure('directory').with_owner('mustermann') }
     it { should contain_file('/home/arzt2').only_with( {:ensure => 'absent', :force => true, :recurse => true, :path => '/home/arzt2' } ) }
     it {
+      should contain_group('system_group_1').with_system('true')
+      should contain_group('system_group_2').with_system('true')
       should contain_group('gruppe_1')
       should contain_group('gruppe_2')
       should contain_group('gruppe_3')

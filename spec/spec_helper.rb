@@ -1,7 +1,7 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
 
 NrResourcesInElexisCommon = 21
-NrResourcesInElexisCommon_with_Hiera = 49
+NrResourcesInElexisCommon_with_Hiera = 51
 WheezyFacts = { :osfamily => 'Debian',
                 :operatingsystem => 'Debian',
                 :operatingsystemrelease => 'wheezy',

@@ -59,6 +59,7 @@ class elexis::users() {
   if ($::elexis::params::ensure) {
     # notify{"Gen add_groups from  $::elexis::params::add_groups":}
     ensure_resource(group, $::elexis::params::add_groups, { ensure => present} )
+    ensure_resource(group, $::elexis::params::add_system_groups, { ensure => present, system => true} )
     # notify{"Gen users from  $::elexis::params::user_definition":}
     create_resources(elexis_add_users,  $::elexis::params::user_definition, {})
   } else {

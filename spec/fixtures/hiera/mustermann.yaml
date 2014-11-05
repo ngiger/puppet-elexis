@@ -3,6 +3,8 @@
 # Copyright 2014 by Niklaus Giger <niklaus.giger@member.fsf.org>
 # I prefer to minimize the use of hieradata for unit tests
 # but it is also important to test it sometimes with hieradata (eg. elexis_samba_spec.rb, samba_server_spec.rb)
+elexis::samba::ensure: true
+elexis::samba::pdf_ausgabe: true
 elexis::samba::samba_base: /opt/mustermann/samba
 samba::server::workgroup: 'Praxis Mustermann'
 samba::server::shares:
@@ -12,8 +14,15 @@ samba::server::shares:
     - 'writable = true'
     - 'browsable = false'
 
-elexis::samba::pdf_ausgabe: true
-elexis::samba::ensure: true
+elexis::nfs::client: true
+elexis::nfs::server: true
+elexis::nfs::mounts:
+  /mnt/1:
+    device:   localhost:/blubb
+    fstype:   test_type
+    ensure:   absent
+    options:  defaults,rw
+    atboot:   false
 
 elexis::elexis_installations::demoDB:
   elexis_3_opensource:
@@ -26,6 +35,7 @@ elexis::params::mysql_server::ensure: true
 elexis::params::postgresql_server::ensure: true
 elexis::params::backup_user: backup_mustermann
 elexis::params::db_user: db_user_mustermann
+elexis::params::add_system_groups: [ system_group_1, system_group_2 ]
 elexis::params::add_groups: [ gruppe_1, gruppe_2, gruppe_3 ]
 elexis::params::elexis_main: mustermann
 elexis::params::user_definition:

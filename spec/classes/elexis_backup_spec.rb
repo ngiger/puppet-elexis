@@ -25,6 +25,7 @@ PgCronPatterns = [
 
 CrontabBackup = '/etc/cron.d/rsnapshot_elexis_backup'
 describe 'elexis::backup' do
+  let(:hiera_config) { }
 #  let(:facts) {{ :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :lsbdistid => 'debian'}}
   context 'when running with default parameters' do
     it { should compile }
@@ -46,6 +47,7 @@ describe 'elexis::backup' do
     it { should contain_exec('/home').with_command(/mkdir -p \/home/) }
     it { should contain_exec('/opt/backup/pg/dumps').with_command(/mkdir -p \/opt\/backup\/pg\/dumps/) }
     it { should contain_exec('/opt/backup/mysql/dumps').with_command(/mkdir -p \/opt\/backup\/mysql\/dumps/) }
+    it { should contain_exec('/opt/samba').with_command(/mkdir -p \/opt\/samba/) }
     it { should contain_file(CrontabBackup) }
     it { should contain_file(CrontabBackup).with_content(/ionice -c3/) }
     it { should contain_file('/etc/rsnapshot.elexis_backup.conf').with_content(/\nsnapshot_root\t\/opt\/backup\n/) }
@@ -53,5 +55,10 @@ describe 'elexis::backup' do
     it { should contain_file('/etc/rsnapshot.elexis_backup.conf').with_content(/\nbackup\t\/home\t\.\n/) }
     it { should contain_file('/etc/rsnapshot.elexis_backup.conf').with_content(/\nbackup\t\/opt\/backup\/mysql\/dumps\t\.\n/) }
     it { should contain_file('/etc/rsnapshot.elexis_backup.conf').with_content(/\nbackup\t\/opt\/backup\/pg\/dumps\t\.\n/) }
+    it { should contain_file('/etc/rsnapshot.elexis_backup.conf').with_content(/\nbackup\t\/opt\/samba\t\.\n/) }
+    # TODO: it { should contain_file('/var/log/rsnapshot').with_ensure('directory') }
+    it { should contain_elexis__mkdir_p('/opt/backup/mysql/dumps') }
+    it { should contain_elexis__mkdir_p('/opt/samba') }
   end
+
 end
