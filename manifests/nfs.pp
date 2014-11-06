@@ -5,7 +5,7 @@ class elexis::nfs (
   $mounts     = {},
   $server     = false,
 ) {
-  notify{"elexis::nfs client $client server $server": }
+  # notify{"elexis::nfs client $client server $server": }
   if $client {
     include nfs::client
     create_resources('one_nfs_mount',  $mounts, {})

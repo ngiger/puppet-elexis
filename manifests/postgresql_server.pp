@@ -80,11 +80,13 @@ class elexis::postgresql_server(
     include concat::setup
     include postgresql::client
 
-    user{'postgres':
+    user{$pg_group:
       require => Package[$postgresql::params::client_package_name],
+      system  => true,
     }
-    group{'postgres':
+    group{$pg_group:
       require => Package[$postgresql::params::client_package_name],
+      system  => true,
     }
 
     file  { '/var/lib/postgresql/.ssh/':

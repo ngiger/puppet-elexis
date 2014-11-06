@@ -5,15 +5,16 @@
 #
 class elexis::mysql_server(
   $ensure                  = false,
-  $mysql_main_db_name      = 'elexis',
-  $mysql_main_db_user      = 'elexis',
-  $mysql_main_db_password  = 'elexisTest',
-  $mysql_tst_db_name       = 'test',
+  $mysql_main_db_name      = $::elexis::params::db_main,
+  $mysql_main_db_user      = $::elexis::params::db_user,
+  $mysql_main_db_password  = $::elexis::params::db_password,
+  $mysql_tst_db_name       = $::elexis::params::db_test,
   $dump_crontab_params     =  { minute => 5 }, # dump every hour 5 minutes after the full hour
   $ionice                  = 'ionice -c3',
   $mysql_dump_dir          = '/opt/backup/mysql/dumps',
   $root_password           = 'elexisTest',
   $users                   = {
+
     'elexis@localhost' =>
       {
       ensure                   => 'present',
@@ -125,6 +126,7 @@ class elexis::mysql_server(
     ensure_resource('cron', 'mysql_dump',
       merge( {
         ensure  => present,
+        subscribe => [File[$mysql_dump_script], Exec[$mysql_dump_dir],],
         command => "${ionice} ${mysql_dump_script} >>/var/log/mysql_dump.log 2>&1",
         user    => $mysql_main_db_user,
         require => [File[$mysql_dump_script], Exec[$mysql_dump_dir],],

@@ -22,13 +22,15 @@ describe 'elexis::admin' do
   context 'when running with default parameters' do
     it { should compile }
     it { should compile.with_all_deps }
-    it { should have_resource_count(1) }
+    it { should have_resource_count(2) }
+    it { should contain_file('/etc/ssh').with_mode('0600') }
   end
 
   context 'when running with ensure true' do
     let(:params) { { :ensure => true } }
     it { should compile }
     it { should compile.with_all_deps }
+    it { should contain_file('/etc/ssh').with_mode('0600') }
     it { should have_resource_count(NrResourcesInElexisCommon) }
   end
 end
@@ -48,5 +50,6 @@ describe 'elexis::admin' do
     it { should contain_exec('set_timezone_zurich') }
     it { should contain_file('/usr/local/bin/halt.sh') }
     it { should contain_file('/usr/local/bin/reboot.sh') }
+    it { should contain_file('/etc/ssh').with_mode('0600') }
   end
 end

@@ -50,7 +50,7 @@ define setpass_cleartext($cleartext) {
 /bin/bash /opt/set_passwd_${title}
 ",
     require   => User[$title],
-    unless    => "/bin/grep ${title}:.+: /etc/shadow",
+    unless    => "/bin/egrep ${title}:.+: /etc/shadow",
   }
 }
 

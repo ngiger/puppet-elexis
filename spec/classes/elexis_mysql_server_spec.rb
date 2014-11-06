@@ -21,7 +21,7 @@ describe 'elexis::mysql_server' do
   let(:facts) { WheezyFacts }
   context 'when running with default parameters' do
     it { should compile }
-    it { should have_resource_count(1) }
+    it { should have_resource_count(2) }
     it { should_not contain_user('mysql') }
     it { should_not contain_service('mysql-server').with_ensure('present') }
     it { should_not contain_package('mysql-client').with_ensure('present') }
@@ -41,7 +41,7 @@ describe 'elexis::mysql_server' do
                           /mysql_dump_dir\s+=\s+'\/opt\/backup\/mysql\/dumps'/,
                           /mysql_main_db_name\s+=\s+'elexis'/,
                           /mysql_tst_db_name\s+=\s+'test'/,
-                          /mysql_main_db_user\s+=\s+'elexis'/,
+                          /mysql_main_db_user\s+=\s+'db_elexis_user'/,
                           /mysql_main_db_password\s+=\s+'elexisTest'/,
                           /\#{mysql_main_db_name}.dump.gz/,
                           ]

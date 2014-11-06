@@ -6,6 +6,12 @@ class elexis::admin (
   $packages   = [fish, mosh, screen, lm-sensors, git, unzip, dlocate, mlocate, htop, curl, bzr, unattended-upgrades, anacron],
 ) {
   $managed_note = hiera('managed_note', '# managed by puppet elexis::admin')
+  # always ensure correct permission. Else the ssh-server would not work
+  file { '/etc/ssh':
+    ensure => directory,
+    mode   => '0600',
+    recurse => true,
+  }
   if ($ensure) {
     ensure_packages($packages)
     # The config writer personal choice
