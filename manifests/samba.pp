@@ -7,36 +7,31 @@
 # which is far better for using hiera
 #
 class elexis::samba (
-  $ensure               = absent,
+  $ensure               = "",
   $samba_base           = '/opt/samba',
   $samba_praxis         = '/opt/samba/elexis',
   $samba_pdf            = '/opt/samba/elexis/neu',
+  $pdf_share            =  [
+          "comment        = 'Ausgabe für Drucken in Datei via PDF'",
+          'browsable      = true',
+          'read_only      = true',
+          "force_user     = '$::elexis::params::elexis_main'",
+          'guest_only     = false',
+          'guest_ok       = true',
+  ],
   $pdf_ausgabe          = false,
   $with_x2go            = false,
   $x2go_win_version     = '4.0.0.3',
   $x2go_mac_version     = '4.0.1.0',
 )  {
   include elexis::common
-  $samba_owner = root
-  if ($ensure != absent) {
+  if ($ensure) {
+    $samba_owner = root
     if ($pdf_ausgabe == false) {
       class {'samba::server': }
     } else {
-  notify { 'test: elexis::samba with pdf_ausgabe': }
       $params = hiera('samba::server::shares', {})
-      $share_pdf = { 'pdf-ausgabe' =>
-        [
-          "comment        = 'Ausgabe für Drucken in Datei via PDF'",
-          'browsable      = true',
-          'read_only      = true',
-          "force_user     = '%S'",
-          'guest_only     = false',
-          'guest_ok       = true',
-          'create_mask    = 0600',
-          'directory_mask = 0700',
-          ]
-        }
-      $merged_hash = merge($params, $share_pdf)
+      $merged_hash = merge($params, { 'pdf-ausgabe' => concat($pdf_share, ["path           = $samba_pdf"]) } )
       class {'samba::server': shares => $merged_hash }
 
       ensure_packages(['cups-pdf', 'cups-bsd'])
@@ -53,6 +48,7 @@ PostProcessing /usr/local/bin/cups-pdf-renamer
 ',
       mode    => '0644',
       require => Package['cups-pdf'],
+      notify  => Service[$::samba::params::service],
       }
 
       file{'/usr/local/bin/cups-pdf-renamer':
@@ -75,8 +71,8 @@ sudo -u \$2 mv \$1 ${samba_pdf}/\$FILENAME && logger cups-pdf moved \$1 to ${sam
       creates   => $tested_smb_conf,
       unless    => "/usr/bin/test ${tested_smb_conf} -nt /etc/smb.conf",
       # refreshonly => true,
-      require   => Service['samba'],
-      subscribe => Service['samba'],
+      require   => Service[$::samba::params::service],
+      subscribe => Service[$::samba::params::service],
     }
 
     file{[$samba_base, $samba_praxis, $samba_pdf]:

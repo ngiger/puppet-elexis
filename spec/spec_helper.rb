@@ -43,4 +43,4 @@ module RSpec::Puppet
   end
 end
 
-# at_exit { RSpec::Puppet::Coverage.report! }
+ at_exit { RSpec::Puppet::Coverage.report! }

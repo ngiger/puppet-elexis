@@ -1,10 +1,11 @@
 # Here we define a install various utilities for the administrator
 
 class elexis::admin (
-  $ensure     = false,
+  $ensure     = $::elexis::params::ensure,
   $pg_util_rb = '/usr/local/bin/pg_util.rb',
   $packages   = [fish, mosh, screen, lm-sensors, git, unzip, dlocate, mlocate, htop, curl, bzr, unattended-upgrades, anacron],
-) {
+  $editor_package = "",
+) inherits elexis::params {
   $managed_note = hiera('managed_note', '# managed by puppet elexis::admin')
   # always ensure correct permission. Else the ssh-server would not work
   file { '/etc/ssh':
@@ -14,17 +15,51 @@ class elexis::admin (
   }
   if ($ensure) {
     ensure_packages($packages)
+    # this ensure
+    if ($vagrant == 1) {
+      if false {
+      file{'/etc/hiera.yaml':
+        ensure => file,
+        source => "${::settings::confdir}/hiera.yaml",
+      }
+      file{'/etc/hiera.yaml1':
+        ensure => file,
+        # source => "${::settings::confdir}/hiera.yaml",
+        content => "# default configuration written by $managed_note with default values for demo of elexis-vagrant
+# http://www.glennposton.com/posts/puppet_best_practices__environment_specific_configs
+---
+:backends:
+  - yaml
+:yaml:
+  :datadir: '${settings::confdir}/hiera-example-practice'
+:hierarchy:
+  - '%{::environment}/%{::fqdn}'
+  - '%{::environment}/%{::hostname}'
+  - '%{::environment}/%{calling_module}'
+  - '%{::environment}/%{::environment}'
+  - 'common/%{calling_module}'
+  - common
+",
+      }
+      file_line { 'datadir_/etc/hiera.yaml':
+        ensure => present,
+        path   => '/etc/hiera.yaml.2',
+        line   => "  :datadir: '${settings::confdir}/hiera-example-practice'",
+        match  => "\s+:datadir:\s+",
+      }
+      }
+    }
+
     # The config writer personal choice
-    if hiera('editor::default', false) {
-      $editor_default = hiera('editor::default', '/usr/bin/vim.nox')
-      $editor_package = hiera('editor::package', 'vim-nox')
+    if $editor_package {
       ensure_packages([ $editor_package ])
+      $editor_path = regsubst("/usr/bin/$editor_package", '-', '.')
       exec {'set_default_editor':
-        command     => "update-alternatives --set editor ${editor_default}",
+        command     => "update-alternatives --set editor ${editor_path}",
         # require => Package[$editor_package],
         path        => '/usr/bin:/usr/sbin:/bin:/sbin',
         environment => 'LANG=C',
-        unless      => "update-alternatives --display editor --quiet | grep currently | grep ${editor_default}"
+        unless      => "update-alternatives --display editor --quiet | grep currently | grep ${$editor_path}"
       }
     }
 
@@ -58,14 +93,14 @@ class elexis::admin (
 
     # permissions for these commands
     file { '/usr/local/bin/reboot.sh':
-      content => "sudo /sbin/shutdown -r -t 30 now\n",
+      content => "sudo /sbin/shutdown -r -t 30 1\n",
       owner   => root,
       group   => root,
       mode    => '6554',
     }
 
     file { '/usr/local/bin/halt.sh':
-      content => "sudo /sbin/shutdown -h -t 30\n",
+      content => "sudo /sbin/shutdown -h -t 30 1\n",
       owner   => root,
       group   => root,
       mode    => '6554',

@@ -30,10 +30,15 @@ class elexis::acls(
   if ($ensure == absent) {
     } else {
     # https://tobrunet.ch/2013/01/iterate-over-datastructures-in-puppet-manifests/
-    create_resources(add_acl, $conf, {})  # no default values
+        create_resources(add_acl, $conf, {})  # no default values
   }
 }
 
 define add_acl($permissions) {
-  fooacl::conf {"${title}_${permissions}":  target => $title, permissions => $permissions ,  }
+  if $title {
+    if !defined(File[$title]) {
+      exec{"mkdir_$title": unless => "/usr/bin/test -e $title", command => "/bin/mkdir -p $title" }
+    }
+    fooacl::conf {"${title}_${permissions}":  target => $title, permissions => $permissions ,  }
+  }
 }

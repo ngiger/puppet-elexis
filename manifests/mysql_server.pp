@@ -128,7 +128,6 @@ class elexis::mysql_server(
         ensure  => present,
         subscribe => [File[$mysql_dump_script], Exec[$mysql_dump_dir],],
         command => "${ionice} ${mysql_dump_script} >>/var/log/mysql_dump.log 2>&1",
-        user    => $mysql_main_db_user,
         require => [File[$mysql_dump_script], Exec[$mysql_dump_dir],],
         }, $dump_crontab_params
       )

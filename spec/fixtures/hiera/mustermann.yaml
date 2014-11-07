@@ -3,6 +3,7 @@
 # Copyright 2014 by Niklaus Giger <niklaus.giger@member.fsf.org>
 # I prefer to minimize the use of hieradata for unit tests
 # but it is also important to test it sometimes with hieradata (eg. elexis_samba_spec.rb, samba_server_spec.rb)
+elexis::admin::editor_package: vim
 elexis::samba::ensure: true
 elexis::samba::pdf_ausgabe: true
 elexis::samba::samba_base: /opt/mustermann/samba
@@ -75,3 +76,7 @@ elexis::params::user_definition:
     uid: 5558
     pw_clear: test
 
+elexis::acls::conf:
+  /opt/samba/inhaber:
+     permissions:
+      - 'user:backup:r-x'

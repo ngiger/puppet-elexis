@@ -256,7 +256,6 @@ class elexis::postgresql_server(
       merge( {
         ensure  => present,
         command => "${ionice} ${pg_dump_script} >>/var/log/pg_dump.log 2>&1",
-        user    => $pg_user,
         require => File[$pg_dump_script, $pg_dump_dir],
         }, $dump_crontab_params
       )

@@ -17,6 +17,7 @@
 require 'spec_helper'
 
 describe 'elexis::acls' do
+  let(:hiera_config) { }
   context 'when running with default parameters' do
     it { should compile.with_all_deps }
     it { should_not contain_fooacl }
@@ -25,6 +26,7 @@ describe 'elexis::acls' do
 end
 
 describe 'elexis::acls' do
+  let(:hiera_config) { }
   context 'when running under Debian with configured acls' do
      let(:params) { { :conf => { '/var/www' => { 'permissions' => ['user:backup:r-X', 'user:www-data:rwX' ] },
                                  '/data'    => { 'permissions' => ['user:backup:r-X', 'user:www-data:rwX' ] }
@@ -39,3 +41,14 @@ describe 'elexis::acls' do
   end
 end
 
+describe 'elexis::acls' do
+  let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
+  context 'when running under Debian with acls from hiera' do
+    let(:params) { {} }
+    it { should contain_fooacl }
+    it { should contain_add_acl('/opt/samba/inhaber') }
+    it { should contain_exec('/usr/local/sbin/fooacl') }
+    it { should contain_elexis__acls }
+    it { should contain_exec('mkdir_/opt/samba/inhaber') }
+  end
+end
